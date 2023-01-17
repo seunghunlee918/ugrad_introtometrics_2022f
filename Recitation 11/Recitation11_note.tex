@@ -1,0 +1,231 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{letterpaper, left=22.5mm, right=22.5mm, top=30mm, bottom=30mm}
+\geometry{letterpaper}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{mathpazo}
+%\usepackage{charter}
+%\usepackage{newcent}
+\usepackage{indentfirst}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usetikzlibrary{trees}
+\pagestyle{fancy}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{property}
+\newtheorem{property}{Property}[section]
+\theoremstyle{assumption}
+\newtheorem{assumption}{Assumption}[section]
+\theoremstyle{example}
+\newtheorem{example}{Example}[section]
+\theoremstyle{comment}
+\newtheorem{comment}{Comment}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{lastpage}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{setspace}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\newcommand{\ROM}[1]
+    {\MakeUppercase{\romannumeral #1}}
+\fancyhead[L]{Econometrics: Recitation 11}%change each reci
+\fancyhead[R]{Fall2022}
+\fancyfoot[C]{\thepage \hspace{1pt} / \pageref{LastPage}}
+
+\fancypagestyle{firstpage}{%
+\fancyhf{}%
+\renewcommand{\headrulewidth}{0mm}%
+  \fancyfoot[C]{\thepage \hspace{1pt} / \pageref{LastPage}}
+}
+%change title each rec
+\title{Introduction to Econometrics: Recitation 11}
+
+\begin{document}
+\linespread{1.25}
+\onehalfspacing
+
+\author{Seung-hun Lee\footnote{Contact me at \href{mailto:sl4436@columbia.edu}{sl4436@columbia.edu} if you spot any errors or have suggestions on improving this note.}}
+\date{December 8th, 2022}
+\maketitle
+\thispagestyle{firstpage}
+
+%%%%%%%%%%%%%%%%%%
+
+\section{Economics of Experiments}
+\subsection{Local average treatment effects}
+Here, we explore the ways of identifying the treatment effects when the random assignment and the unconfoundedness assumptions fail. In other wards, we have selection into treatment based on unobservable traits (or selection on unobservables). In order to estimate the treatment effect, we need an exogenous variation that dictates the assignment into the treatment. Thus, we use an instrument variable method for this approach. 
+\par
+The way this works is as follows: $Z_i$ is a binary variable equal to 1 if individual $i$ qualifies for a randomized eligibility status to be treated, like a lottery for example. Conversely, we have $Z_i=0$ if $i$ is not eligible. $X_i$ is the (observed) actual assignment into the treatment. However, unlike in previous cases, $X_i$ is a function of $Z_i$ and this is also counterfactual; For a given individual $i$, you can only observe one of $X_i(1)=X_i(Z_i=1)$ or  $X_i(0)=X_i(Z_i=1)$. So there is a missing data problem for $X_i(z) \ (z\in\{0,1\})$. Based on this idea, we can write 
+\[
+\begin{aligned}
+X_i &= X_i(1)Z_i+ X_i(0)(1-Z_i)\\
+&=X_i(0)+Z_i(X_i(1)-X_i(0))
+\end{aligned}
+\]
+A useful trick here is that since $X_i$ is defined this way, we can write
+\[
+\begin{aligned}
+1- X_i &= 1- X_i(1)Z_i- X_i(0)(1-Z_i)\\
+&=1-X_i(0)-Z_i(X_i(1)-X_i(0))
+\end{aligned}
+\]
+\par
+The definition of $Y_i$ is similar as before - this is the observed outcome for each individual. But the counterfactual version depends on two parameters - on $X_i$ (whether $i$ participated in the treatment) and $Z_i$ (whether $i$ was eligible). We can write the potential outcome framework as follows (But note that $Y_i(1)=Y_i(X_i=1)$ and that $X_i(1) = X_i(Z_i=1)$)
+
+\[
+\begin{aligned}
+Y_i & =Y_i(1)X_i+Y_i(0)(1-X_i) \ \\
+&=Y_i(1)[X_i(0)+Z_i(X_i(1)-X_i(0))] + Y_i(0)[1-X_i(0)-Z_i(X_i(1)-X_i(0))]\\ 
+&=Y_i(1)X_i(0)+ Z_iY_i(1)(X_i(1)-X_i(0)) + Y_i(0)- Y_i(0)X_i(0) - Z_iY_i(0)(X_i(1)-X_i(0))\\
+&=Y_i(0) + X_i(0)(Y_i(1)-Y_i(0))+Z_i(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))
+\end{aligned}
+\]
+In this framework, local average treatment effect (LATE) is defined as 
+\[
+LATE = E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]
+\]
+As to how this relates to our identification and estimation, we will need to set assumptions and categorize the individuals into 4 groups - those who always participate (always takers, AT), those who never participate (never takers, NT), those who participate only if they are eligible (compliers, CP), and those who participate only if they are ineligible (defiers). 
+\par
+\subsubsection{Assumptions}
+The key assumptions that apply to above setup are as follows
+\begin{itemize}
+\item LATE1: \textbf{$Z_i$ is independent of $(Y_i(1), Y_i(0), X_i(1),X_i(0))$} \\
+This implies that both of the conditions hold:
+\begin{itemize}
+\item[1] $Z_i\perp(\underbrace{Y_i(1,1),  Y_i(0,1)}_{Y_i(1)},\underbrace{Y_i(1,0), Y_i(0,0)}_{Y_i(0)}, X_i(1),X_i(0))$, where we have $Y_i(z,x)$ now
+\item[2] $Y_i(z,x)=Y_i(z',x)$ For all $z,z',x$
+\end{itemize}
+This implies that LATE1 assumption requires more than just randomization of $Z_i$. Randomization of $Z_i$ guarantees the first subcondition. The second subcondition has nothing to do with the random assignment of $Z_i$. You can think of this subcondition (and LATE1 in general) as an application of exogeneity (or exclusion) condition in that $Z_i$ only affects outcome through treatment status $X_i$ (so $Z_i$ has no direct impact on outcome variable)
+\item LATE2: \textbf{Relevance, $\Pr(X_1=1|Z_i=1) \neq \Pr(X_i=1|Z_i=0)$}\\
+This implies that the $Z_i$ dictates the likelihood of participating in the treatment. So it is very much related to the relevance condition in the IV condition.
+
+\item LATE3: \textbf{No defiers, $X_i(1)\geq X_i(0)$} \\
+This condition rules out the case that $i$ participates if ineligible but does not participate if eligible. Under this assumption, we have the three types of participants
+\begin{itemize}
+\item[1] Always takers: $X_i(1)=1, X_i(0)=1$
+\item[2] Never takers: $X_i(1)=0, X_i(0)=0$
+\item[3] Compliers: $X_i(1)=1, X_i(0)=0$
+\end{itemize}
+So $X_i(z)$ is only allowed to increase with $z_i$ in this setup. This is not the case with defiers. 
+\begin{itemize}
+\item[4] Defiers: $X_i(1)=0, X_i(0)=1$
+\end{itemize}
+Here $X_i(z)$ decreases with $Z_i$. By imposing LATE3, we rule out this movement (so this is also called no two-way movement condition)
+\end{itemize}
+So if we categorize the observations based on the values of $X_i(z)$ for each $z$, we can write
+\begin{center}
+\begin{tabular}{r |c c}
+& $X_i(0)=0$ &$X_i(0)=1$\\ \hline
+$X_i(1)=0$& Never taker& Defier\\
+$X_i(1)=1$ & Complier & Always taker\\
+\end{tabular}
+\end{center}
+But $X_i(z)$ also suffers from missing data problem since we can only observe only one of $X_i(1)$ or $X_i(0)$ for each $i$. If we write the above tables for the observables $X_i$ and $Z_i$
+\begin{center}
+\begin{tabular}{r |c c}
+& $Z_i=0$ &$Z_i=1$\\ \hline
+$X_i=0$& Never taker \textit{or} Complier &Never taker \textit{or} Defier\\
+$X_i=1$ & Always taker \textit{or} Defier & Always taker \textit{or} Complier\\
+\end{tabular}
+\end{center}
+By LATE3 assumption, we can rule out defiers and identify the share of always takers(AT), never takers(NT), and compliers(C) as follows
+\[
+\begin{aligned}
+\pi_{AT}+\pi_{NT}+\pi_{C}&=1\\
+\pi_{AT}+\pi_{C}&=E[X_i|Z_i=1]\\
+\pi_{NT}+\pi_{C}&=1-E[X_i|Z_i=0]\\
+\end{aligned}
+\]
+So we get
+\[
+\begin{aligned}
+1+\pi_C=1+E[X_i|Z_i=1] -E[X_i|Z_i=0] \implies \pi_C=E[X_i|Z_i=1] -E[X_i|Z_i=0] 
+\end{aligned}
+\]
+and by replacing $\pi_C$, we can back out $\pi_{AT}$ and $\pi_{NT}$
+\[
+\begin{aligned}
+\pi_{AT}&=E[X_i|Z_i=0]\\
+\pi_{NT}&=1-E[X_i|Z_i=1]\\
+\end{aligned}
+\] 
+\par
+One notable criticism of the LATE approach is that this identifies a treatment effect for an unidentifiable segment of the population in that it is difficult to identify compliers from $(Y_i, X_i, Z_i)$ alone. Furthermore, the definition of compliers change with the definition of $Z_i$. In general, interpretation of LATE is tricky.
+\subsubsection{Identifying LATE}
+To back out the LATE, we need to rework the definition as follows
+\[
+\begin{aligned}
+E[Y_i|Z_i]&=E[Y_i(0)|Z_i] + E[X_i(0)(Y_i(1)-Y_i(0))|Z_i]+Z_iE[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))|Z_i]\\
+&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]+Z_iE[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))] \ (\because LATE1) \\
+\end{aligned}
+\]
+This means
+\[
+\begin{aligned}
+E[Y_i|Z_i=0]&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]\\
+E[Y_i|Z_i=1]&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]+E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]
+\end{aligned}
+\]
+Thus, $E[Y_i|Z_i=1]-E[Y_i|Z_i=0]=E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]$. What we need to do now is to rewrite the right-hand side of this equation. This is
+\[
+\begin{aligned}
+E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]&=1\times E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]\Pr(X_i(1)-X_i(0)=1)\\
+&+0\times E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=0]\Pr(X_i(1)-X_i(0)=0)\\
+&=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]\Pr(X_i(1)-X_i(0)=1)\\
+\end{aligned}
+\]
+So $E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]$ only returns the treatment effect for complier ($X_i(1)-X_i(0)=1$) groups only (no defier assumption is used). Also, if we go back to counterfactual framework for $X_i$, we get
+\[
+\begin{aligned}
+E[X_i|Z_i] &= Z_i E[X_i(1)|Z_i] + (1-Z_i)E[X_i(0)|Z_i]\\
+\implies E[X_i|Z_i=1] &=E[X_i(1)|Z_i=1]=E[X_i(1)]\\
+\implies E[X_i|Z_i=0] &=E[X_i(0)|Z_i=0]=E[X_i(0)]\\
+\end{aligned}
+\]
+So take the difference to get 
+\[
+\begin{aligned}
+E[X_i|Z_i=1]-E[X_i|Z_i=0]&=E[X_i(1)]-E[X_i(0)]=E[X_i(1)-X_i(0)]=\Pr(X_i(1)-X_i(0)=1)
+\end{aligned}
+\]
+So combine all these to get
+\begin{gather*}
+E[Y_i|Z_i=1]-E[Y_i|Z_i=0]=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1](E[X_i|Z_i=1]-E[X_i|Z_i=0])\\
+\implies\frac{E[Y_i|Z_i=1]-E[Y_i|Z_i=0]}{E[X_i|Z_i=1]-E[X_i|Z_i=0]}=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]=LATE
+\end{gather*}
+and the denominator is only defined if LATE2 assumption is satisfied. (Replace $E[X_i|\cdot]$ with $\Pr(X_i=1|\cdot)$ to get this, which works since $X_i$ is binary).
+\par In terms of estimation, we can find a sample analogue (separate sample for $Z=1$ and $Z=0$) or get this as a Wald estimate - ratio of two separate reduced form regression coefficients. Think about these two regressions
+\[
+\begin{aligned}
+Y_i &= \beta_0+\beta_1Z_i + e_i\\
+X_i & = \gamma_0+\gamma_1Z_i + u_i
+\end{aligned}
+\]
+Then, assuming that $Z_i$ is independent of both $e_i$ and $u_i$, we get
+\[
+E[Y_i|Z_i=1]-E[Y_i|Z_i=0] = \beta_1, \ \ E[X_i|Z_i=1]-E[X_i|Z_i=0] = \gamma_1
+\] 
+Therefore, $LATE = \frac{\beta_1}{\gamma_1}$, whose estimates can be obtained by $\frac{\hat{\beta_1}}{\hat{\gamma_1}}$. \par
+This can be applied for RD estimation - fuzzy or sharp. Let $Z_i=1$ if a running variable crosses the threshold so that $i$ is eligible for treatment (0 if otherwise) and $X_i$ be a binary variable for participation. If RD is sharp, $\gamma_1=1$. If RD is fuzzy, $\gamma_1<1$. $\beta_1$ would be the treatment effect difference between those who passes the threshold vs. those who do not. The treatment effect in RD can be obtained by dividing between $\beta_1$ and $\gamma_1$. 
+%%%%%%%%%%%%%%%
+\end{document}
+

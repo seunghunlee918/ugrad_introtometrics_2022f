@@ -1,0 +1,442 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 8 (UN 3412)]{Recitation 8: MLE and IV estimation} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[November 10th, 2022]{November 10th, 2022}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Maximum likelihood estimation}}
+       \end{center}
+\end{transitionframe}
+
+
+
+\begin{frame}
+\frametitle{Different approach to regression: Maximum likelihood estimators}
+\begin{itemize}
+\item Both probit and logit are nonlinear: $\beta_0, \beta_1$ parameters are no longer in linear relationship with the $X_i's$ and subsequently $Y_i$'s
+\item A \textbf{likelihood function} is the conditional density of $Y_1,...,Y_n$ given $X_1,...,X_n$ that is treated as the function of the unknown parameters ($\beta_0, \beta_1$ in our case)
+\item What we are trying to do here is to find the values of $\beta_i$'s that best matches the values of $X_i$'s and $Y_i$'s
+\item \textbf{Maximum likelihood estimators} is the value of $\beta_i$'s that best describes the data and maximizes the value of the likelihood function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum likelihood estimators in practice}
+\begin{itemize}
+\item Assume $Y_i$'s are IID normal with mean $\mu$ and standard error $\sigma$ (both are unknown)
+\item The joint probability of $Y_i$'s are (our likelihood function)
+\[
+\begin{aligned}
+\Pr(Y_1=y_1,...,Y_n=y_n|\mu,\sigma)&=\Pr(Y_1 = y_1|\mu,\sigma)\times..\times\Pr(Y_n=y_n|\mu,\sigma)\\
+&=\prod_{i=1}^nf(y_i|\mu,\sigma)\\
+&=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(Y_i-\mu)^2}{2\sigma^2}}\\
+&=(2\pi)^{-\frac{n}{2}} (\sigma^2)^{-\frac{n}{2}}e^{-\sum_{i=1}^n\frac{(Y_i-\mu)^2}{2\sigma^2}}\\
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum likelihood estimators in practice}
+\begin{itemize}
+\item Calculation is made easier by using log-likelihood functions (take logs to likelihood functions)
+\[
+-\frac{n}{2}\ln{(2\pi)}-\frac{n}{2}\ln{\sigma^2}-\sum_{i=1}^n\frac{(Y_i-\mu)^2}{2\sigma^2} 
+\]
+\item We differentiate the above with respect to $\mu$ and $\sigma$ to find the MLE of these parameters.
+\item This gets us
+\[
+\begin{aligned}
+\mu_{MLE}&=\frac{1}{n}\sum_{i=1}^nY_i\\
+\sigma^2_{MLE}&=\frac{1}{n}\sum_{i=1}^n(Y_i-\mu_{MLE})^2
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Instrumental variables}}
+       \end{center}
+\end{transitionframe}
+
+
+\begin{frame}
+\frametitle{Why use IV? Deal with $E[u_i|X_i]\neq0$}
+\begin{itemize}
+\item Recall that OLS estimates can be biased when we have omitted variable bias, measurement error, and simultaneity bias
+\item Instrumental variable: Allows us to eliminate bias
+\begin{itemize}
+\item When you have an independent variable $X$, there are parts of this variable that are correlated with $u$ and the other parts that are independent of $u$.
+\item If we are able to find $Z$ that is correlated with $X$ but not with $u$, using this $Z$ variable would allow you to sort variable $X$ into what is correlate with $u$ and what is not. 
+\item Then, using the part that is not correlated with $u$, variable $Z$ allows us to get unbiased estimates.
+\end{itemize}
+\item Uses of IV
+\begin{itemize}
+\item Endogenous variable: $X$ determined as choice, not as given
+\item Simultaneity bias: $Y$ can lead to changes in $X$
+\item Omitted variable bias: Unincorporated determinant of $Y$
+\item Measurement error in $X$ 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Association vs causation}
+\begin{itemize}
+\item Association refers to any type of statistical dependence
+\begin{itemize}
+\item It mostly refers to correlation, which is 
+\[
+\text{corr}(x,y) = \frac{\text{cov}(x,y)}{\sqrt{\text{var}(x)}\sqrt{\text{var}(y)}}
+\]
+\end{itemize}
+\item Running an OLS is practically equivalent to finding the correlation
+\begin{itemize}
+\item From the population regression, 
+\[
+\beta_1=\frac{E[X-E[X]]E[Y-E[Y]]}{(E[X-E[X]])^2} = \text{corr}(X,Y)\sqrt{\frac{\text{var}(Y)}{\text{var}(X)}}
+\]
+implying that $\beta_1$ is obtained by multiplying $corr(X,Y)$ with some constant
+\item Same correlation direction (variances are nonnegative)
+\item Not good for finding causal effect of $X$ on $Y$: Switching the two would give same results
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What conditions should IV satisfy?}
+\begin{itemize}
+\item Must satisfy
+\begin{itemize}
+\item\textbf{Relevance}: Variable $Z$ satisfies relevancy condition if $cov(X,Z)\neq0$
+\item\textbf{Exogeneity}: Variable $Z$ satisfies exogeneity condition if $cov(Z,u)=0$
+\end{itemize}
+\item In words, 
+\begin{itemize}
+\item Variable $Z$ should be somewhat correlated with the variable $X$
+\item Variable $Z$ should not be correlated with $u$
+\item (For exogeneity): Variable $Z$ should affect $Y$ only through $X$, or when $X$ is controlled for, $Z$ alone should not affect $Y$ (\textbf{exclusion})
+\end{itemize}
+\item More on exclusion (on model $Y=\beta_0+\beta_1X+u$)
+\[
+\begin{aligned}
+cov(Z,u)&=cov(Z,Y-\beta_0-\beta_1X)=0\\
+&=cov(Z,Y)-cov(Z,\beta_0)-cov(Z,\beta_1X)=0\\
+&\implies cov(Z,Y)=cov(Z,\beta_1X)
+\end{aligned}
+\]
+This condition means that Z is correlated with Y \textit{only through X}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{2SLS estimation}
+
+\begin{itemize}
+\item \textbf{Regress with $X$ as dependent, $Z$ as independent variable.} Regress
+\[
+X=\delta_0 + \delta_1Z+v
+\]
+From this regression, obtain the predicted values of $X$, denoted as $\hat{X}=\hat{\delta}_0+\hat{\delta}_1Z$. This $\hat{X}$ is the part that is related with $Z$ but is uncorrelated with $u$.
+\item \textbf{Regress with $Y$ as dependent, $\hat{X}$ as independent variable.} Regressing with this $\hat{X}$ will satisfy the $E[u|\hat{X}]=0$ condition, as the $\hat{X}$ is uncorrelated with $u$. Thus, your regression equation looks like this:
+\[
+Y=\beta_0+\beta_1\hat{X}+u
+\]
+Then you run a OLS regression on the above equation and get the 2SLS estimator $\hat{\beta}_{\text{TSLS}}$. 
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Estimating using a covariance method}
+\begin{itemize}
+\item Note that
+\[
+cov(Z,Y)=cov(Z,\beta_1X) \implies cov(Z,Y)=\beta_1cov(Z,X)
+\]
+\item From this, we can get
+\[
+\beta_1=\frac{cov(Z,Y)}{cov(Z,X)}
+\]
+where division is possible because we require a relevancy condition ($cov(Z,X)\neq0$)
+\item Taking the sample counterparts, we get our IV estimator
+\[
+\hat{\beta}_{TSLS}=\frac{s_{ZY}}{s_{ZX}}
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Reduced form method}
+\begin{itemize}
+\item Denote 
+\begin{gather*}
+X=\pi_0+\pi_1Z+v \ (\text{where }cov(Z,v)=0)\\ Y=\gamma_0+\gamma_1Z+w \ (\text{where }cov(Z,w)=0)
+\end{gather*}
+\item Rewrite the first equation in terms of $Z$ and get
+\[
+Z=\frac{X}{\pi_1}-\frac{\pi_0}{\pi_1}-\frac{v}{\pi_1}
+\]
+\item Then plug this into the second equation. Reorganizing this equation, you should get
+\[
+Y=\left(\gamma_0-\frac{\pi_0\gamma_1}{\pi_1}\right)+\left(\frac{\gamma_1}{\pi_1}\right)X+\left(w-\frac{\gamma_1}{\pi_1}u\right)
+\]
+\item As a result, $\beta_1$ from the equation with $X$ as independent variable is $\beta_1 = \frac{\gamma_1}{\pi_1}$. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{IV estimate is consistent!}
+\begin{itemize}
+\item Consistency: 2SLS can be written as
+\[
+\hat{\beta}_{1,\text{TSLS}}=\frac{s_{zy}}{s_{zx}}\simeq\frac{\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})(Y_i-\bar{Y})}{\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})(X_i-\bar{X})}
+\]
+As $n\to\infty$, we can show that $\hat{\beta}_{1,\text{TSLS}}\to\beta_1$
+\begin{itemize}
+\item $\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})(Y_i-\bar{Y}) \xrightarrow{p} cov(Z,Y)$
+\item $\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})(X_i-\bar{X}) \xrightarrow{p} cov(Z,X)$
+\item Note that $cov(Z,Y) = cov(Z,\beta_0+\beta_1X+u)=\beta_1 cov(Z,X) + cov(Z,u)$
+\item If $Z$ is a valid IV, $ cov(Z,u)=0$
+\item So $\hat{\beta}_{1,\text{TSLS}}\to\frac{\beta_1 cov(Z,X)}{cov(Z,X)} =\beta_1$ QED
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multivariate case and key assumptions}
+\begin{itemize}
+\item Suppose that we have
+\[
+Y_i = \beta_0 + \beta_1X_{1i} +...+ \beta_kX_{ki} + \delta_1W_{1i}+...+\delta_lW_{li}+u_i 
+\]
+where $X$ variables are endogenous and $W$ variables are exogenous. 
+\item Assume that we have found a total of $m$ (not necessarily equal to $k$) variables that could qualify as IVs, all of them satisfying 
+\begin{itemize}
+\item[\textbf{IV1}] $E[u_i|W_{1i},...,W_{li}]=0$ (At least for exogenous variables, this is satisfied)
+\item[\textbf{IV2}] $(Y_i,X_{1i},..,X_{ki},W_{1i},..,W_{li},Z_{1i},...,Z_{mi})$ are IID
+\item[\textbf{IV3}] The $Y,X,W,Z$ variables all have nonzero finite 4th moments
+\item[\textbf{IV4}] The instruments are valid. That is $cov(Z_{ji},u_i)=0$ for all $j=1,...,m$ and relevancy conditions are satisfied for all $Z$'s. 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Identification issues on multivariate case}
+\begin{itemize}
+\item A parameter is \textbf{identified} if different values of the parameter produce different distributions of the data. 
+\item In other words, there is a one-to-one matching of the parameters and the distributions.
+\item If it is the case that the same distribution can be obtained from different parameter values, we say that the parameters are not identified
+\item If we have $k$ endogenous regressors and $m$ IV's
+\begin{itemize}
+\item \textbf{Just-identified}: When $m=k$. There are just enough instruments to identify $k$ endogenous variables
+\item \textbf{Overidentified}: When $m>k$. There are more than enough instruments.\item \textbf{Underidentified}: When $m<k$. There are not enough instruments. The coefficients for $X$'s will not be identified 
+\end{itemize}
+\item Need at least as much instrumental variables as the number of endogenous regressors you have
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{IV estimators are normally distributed (but only in large samples)}
+\begin{itemize}
+\item Break down the 2SLS estimators into
+\begin{scriptsize}
+\[
+\begin{aligned}
+\hat{\beta}_{\text{TSLS}}=\frac{s_{zy}}{s_{zx}}&=\frac{\sum_{i=1}^n(Z_i-\bar{Z})(Y_i-\bar{Y})}{\sum_{i=1}^n(Z_i-\bar{Z})(X_i-\bar{X})}= \frac{\sum_{i=1}^n(Z_i-\bar{Z})Y_i}{\sum_{i=1}^n(Z_i-\bar{Z})X_i}\\
+\
+&= \frac{\sum_{i=1}^n(Z_i-\bar{Z})(\beta_0+\beta_1X_i + u_i) }{\sum_{i=1}^n(Z_i-\bar{Z})X_i}= \beta_1+\frac{\sum_{i=1}^n(Z_i-\bar{Z})u_i}{\sum_{i=1}^n(Z_i-\bar{Z})X_i}=\beta_1+\frac{\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})u_i}{\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})X_i}\\
+\end{aligned}
+\]
+\end{scriptsize}
+\item After subtracting both sdies by $\beta_1$ and multiplying both sides by $\sqrt{n}$, we get
+\begin{scriptsize}
+\[
+\sqrt{n}(\hat{\beta}_{\text{TSLS}}-\beta_1)=\frac{\frac{1}{\sqrt{n}}\sum_{i=1}^n(Z_i-\bar{Z})u_i}{\frac{1}{n}\sum_{i=1}^n(Z_i-\bar{Z})X_i}
+\]
+\end{scriptsize}
+\item Denominator $\xrightarrow{p} cov(Z,X)$ by (weak) law of large numbers
+\item Numerators $\sim N(0, var[(Z-\mu_Z)u])$ by central limit theorem. 
+\item Thus, $\hat{\beta}_{\text{TSLS}}$ has a normal distribution.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{We can directly test relevance condition}
+\begin{itemize}
+\item Assume we have
+\[
+Y_i = \beta_0 + \beta_1X_i + \beta_2 W_{1i}+...+\beta_{1+r}W_{ri}+u_i
+\]
+where only $X_i$ is endogenous. 
+\item Suppose we have $m$ instruments. Then our first stage equation looks like
+\[
+X_i = \pi_0 + \pi_1Z_{1i}+...+\pi_mZ_{mi} + \pi_{(m+1)i} W_{1i}+...+ \pi_{(m+r)i}W_{ri}+v_i
+\]
+\item We say our instrument is relevant if at least one of $\pi_1,...,\pi_m$ is statistically nonzero. 
+\item Run the $F$-test with these null and alternative hypothesis
+\[
+H_0: \pi_1 = ... = \pi_m=0 \ \text{vs.} \ H_1: \lnot H_0
+\]
+\item By rule of thumb, we want $F$-statistics to be larger than 10. Otherwise, we have a weak instrument problem (and IV estimator may not be normally distributed even in large numbers)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{We can get a taste of exogeneity condition with many instruments}
+\begin{itemize}
+\item  Consider the following case: We want to regress
+\begin{scriptsize}
+\[
+Y_i = \beta_0 + \beta_1X_{1i} +...+ \beta_kX_{ki} + \delta_1W_{1i}+...+\delta_lW_{li}+u_i 
+\]
+\end{scriptsize}
+and we found $m$ possible candidates for instrumental variables, $Z_1,...,Z_m$
+\item Overidentifying restriction test we conduct here is a $J$-test that uses TSLS estimators and not the hypothesized $\beta$ values. The steps are as follows
+\begin{enumerate}
+\item Regress the above equation using 2SLS.Obtain the residuals $\hat{u}_i=Y_i-\widehat{Y}_i$
+\item Regress residuals onto instruments and other controls, namely
+\begin{scriptsize}
+\[
+\hat{u}_i = \alpha_0 + \alpha_1 Z_{1i}+ ... + \alpha_m Z_{mi} + \alpha_{m+1}W_{1i}+ ... + \alpha_{m+l}W_{li}+v_i
+\]
+\end{scriptsize}
+\item Compute the $F$-statistics from $H_0: \alpha_1 = ... = \alpha_m=0\ \text{vs.} \ H_1: \lnot H_0$
+\item Derive the $J$ statistics as follows $J = m\times F$. $J$ follows $\chi^2_{m-k}$ distribution 
+\item If you have an endogenous IV, you will end up rejecting the null
+\item Then, you need to make a guess on which instrument is violating the exogeneity condition, drop those, and redo the above procedure. (Good luck!)
+\end{enumerate}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Overidentification test as a `distance' between different IVs}
+\begin{itemize}
+\item Assume a case with one endogenous variable $X$ and two IVs ($Z_1, Z_2$)
+\item The estimates for the coefficient for $X$ are 
+\[
+\hat{\beta}_{Z_1}=\frac{cov(Z_1,Y)}{cov(Z_1,X)}, \ \hat{\beta}_{Z_2}=\frac{cov(Z_2,Y)}{cov(Z_2,X)}
+\]
+The numbers look different, although both $\hat{\beta}$'s are suppose to be the same coefficient estimating impact of $X_1$ on $Y$. 
+\item The overidentification test checks whether the differences between $\hat{\beta}_{Z_1}, \hat{\beta}_{Z_2}$ are large.
+\begin{itemize}
+\item If they converge to same item, we do not have to worry. Otherwise, one or more IV might be faulty
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What if we have just enough IVs?}
+\begin{itemize}
+\item To be very honest, there is not much we can do in terms of rigorous testing approach. This is usually the area of judgement call. 
+\item One way to do this is to use the approach of exclusion restriction - you argue that the instrumental variable $Z$ affects $Y$ only through $X$. 
+\begin{itemize}
+\item If $Z$ affects $Y$ directly without $X$, then the exclusion restriction fails. 
+\end{itemize}
+\item You try to persuade others based on logic, previous practices, or intuition (usually a combination of all three). 
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%
+\end{document}

@@ -1,0 +1,338 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 11 (UN 3412)]{Recitation 10: Local average treatment effects} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[December 8th, 2022]{December 8th, 2022}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Local average treatment effect}}
+       \end{center}
+\end{transitionframe}
+
+
+
+\begin{frame}
+\frametitle{Setting up LATE: Selection on unobservables}
+\begin{itemize}
+\item What if random assignment and the unconfoundedness assumptions fail? 
+\item Solution: IV approach which uses exogenous variation that dictates the assignment into the treatment
+\item $Z_i$: Binary variable equal to 1 if individual $i$ qualifies for a randomized eligibility status to be treated
+\item $X_i$: (observed) actual assignment into the treatment (participation). 
+\item $X_i$ is now a function of $Z_i$ and this is also counterfactual; For a given individual $i$, you can only observe one of $X_i(1)=X_i(Z_i=1)$ or  $X_i(0)=X_i(Z_i=1)$. 
+\item Based on this idea, we can write 
+\[
+\begin{aligned}
+X_i &= X_i(1)Z_i+ X_i(0)(1-Z_i)\\
+&=X_i(0)+Z_i(X_i(1)-X_i(0))
+\end{aligned}
+\]
+\item Similarly: $1-X_i=1-X_i(0)-Z_i(X_i(1)-X_i(0))$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Rewriting $Y_i$ in a potential outcome framework}
+\begin{itemize}
+\item $Y_i$ depends on two parameters: $X_i$ (whether $i$ participated in the treatment) and $Z_i$ (whether $i$ was eligible)
+\item We can write the potential outcome framework as follows (But note that $Y_i(1)=Y_i(X_i=1)$ and that $X_i(1) = X_i(Z_i=1)$)
+
+\[
+\begin{aligned}
+Y_i & =Y_i(1)X_i+Y_i(0)(1-X_i) \ \\
+&=Y_i(1)[X_i(0)+Z_i(X_i(1)-X_i(0))] + Y_i(0)[1-X_i(0)-Z_i(X_i(1)-X_i(0))]\\ 
+&=Y_i(1)X_i(0)+ Z_iY_i(1)(X_i(1)-X_i(0)) + Y_i(0)- Y_i(0)X_i(0) - Z_iY_i(0)(X_i(1)-X_i(0))\\
+&=Y_i(0) + X_i(0)(Y_i(1)-Y_i(0))+Z_i(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Local average treatment effect}
+\begin{itemize}
+\item Local average treatment effect (LATE) is defined as 
+\[
+LATE = E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]
+\]
+\item Treatment effect on `compliers'
+\item We will need to set assumptions and categorize the individuals into 4 groups - those who always participate (always takers, AT), those who never participate (never takers, NT), those who participate only if they are eligible (compliers, CP), and those who participate only if they are ineligible (defiers)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{LATE assumptions that are similar to IV}
+\begin{itemize}
+\item LATE1: \textbf{$Z_i$ is independent of $(Y_i(1), Y_i(0), X_i(1),X_i(0))$} \\
+$\to$ Broken down into 
+\begin{itemize}
+\item[1] $Z_i\perp(\underbrace{Y_i(1,1),  Y_i(0,1)}_{Y_i(1)},\underbrace{Y_i(1,0), Y_i(0,0)}_{Y_i(0)}, X_i(1),X_i(0))$, where we have $Y_i(z,x)$ now
+\item[2] $Y_i(z,x)=Y_i(z',x)$ For all $z,z',x$
+\end{itemize}
+$\to$ Randomization of $Z_i$ guarantees the first subcondition.  \\
+$\to$ The second subcondition (and LATE1 in general) is an exogeneity (or exclusion) condition in that $Z_i$ only affects outcome through treatment status $X_i$ (so $Z_i$ has no direct impact on outcome variable)
+\item LATE2: \textbf{Relevance, $\Pr(X_1=1|Z_i=1) \neq \Pr(X_i=1|Z_i=0)$}\\
+$\to$ $Z_i$ dictates the likelihood of participating in the treatment (relevance)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LATE assumptions that are uniquie}
+\begin{itemize}
+\item LATE3: \textbf{No defiers, $X_i(1)\geq X_i(0)$} \\
+$\to$ Rules out the case that $i$ participates if ineligible but does not participate if eligible. \\
+$\to$ Under this assumption, we have the three types of participants
+\begin{itemize}
+\item[1] Always takers: $X_i(1)=1, X_i(0)=1$
+\item[2] Never takers: $X_i(1)=0, X_i(0)=0$
+\item[3] Compliers: $X_i(1)=1, X_i(0)=0$
+\end{itemize}
+$\to$  So $X_i(z)$ is only allowed to increase with $z_i$ in this setup. 
+\begin{itemize}
+\item[4] Defiers: $X_i(1)=0, X_i(0)=1$
+\end{itemize}
+$\to$ Here $X_i(z)$ decreases with $Z_i$. By imposing LATE3, we rule out this movement (so this is also called no two-way movement condition)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Categorizing observations}
+\begin{itemize}
+\item So if we categorize the observations based on the values of $X_i(z)$ for each $z$, we can write
+\begin{center}
+\begin{tabular}{r |c c}
+& $X_i(0)=0$ &$X_i(0)=1$\\ \hline
+$X_i(1)=0$& Never taker& Defier\\
+$X_i(1)=1$ & Complier & Always taker\\
+\end{tabular}
+\end{center}
+\item But $X_i(z)$ also suffers from missing data problem since we can only observe only one of $X_i(1)$ or $X_i(0)$ for each $i$. 
+\item If we write the above tables for the observables $X_i$ and $Z_i$
+\begin{center}
+\begin{tabular}{r |c c}
+& $Z_i=0$ &$Z_i=1$\\ \hline
+$X_i=0$& Never taker \textit{or} Complier &Never taker \textit{or} Defier\\
+$X_i=1$ & Always taker \textit{or} Defier & Always taker \textit{or} Complier\\
+\end{tabular}
+\end{center}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Categorizing observations: Finding the shares}
+\begin{itemize}
+\item By LATE3 assumption, we can rule out defiers and identify the share of always takers(AT), never takers(NT), and compliers(C) as follows
+\[
+\begin{aligned}
+\pi_{AT}+\pi_{NT}+\pi_{C}&=1\\
+\pi_{AT}+\pi_{C}&=E[X_i|Z_i=1]\\
+\pi_{NT}+\pi_{C}&=1-E[X_i|Z_i=0]\\
+\end{aligned}
+\]
+\item So we get
+\[
+\begin{aligned}
+1+\pi_C=1+E[X_i|Z_i=1] -E[X_i|Z_i=0] \implies \pi_C=E[X_i|Z_i=1] -E[X_i|Z_i=0] 
+\end{aligned}
+\]
+and by replacing $\pi_C$, we can back out $\pi_{AT}$ and $\pi_{NT}$
+\[
+\begin{aligned}
+\pi_{AT}&=E[X_i|Z_i=0]\\
+\pi_{NT}&=1-E[X_i|Z_i=1]\\
+\end{aligned}
+\] 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Identifying LATE: Rewrite our target equation}
+\begin{itemize}
+\item To back out the LATE, we need to rework the definition as follows
+\small{\[
+\begin{aligned}
+E[Y_i|Z_i]&=E[Y_i(0)|Z_i] + E[X_i(0)(Y_i(1)-Y_i(0))|Z_i]+Z_iE[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))|Z_i]\\
+&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]+Z_iE[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))] \ (\because LATE1) \\
+\end{aligned}
+\]}\normalsize
+\item This means
+\[
+\begin{aligned}
+E[Y_i|Z_i=0]&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]\\
+E[Y_i|Z_i=1]&=E[Y_i(0)] + E[X_i(0)(Y_i(1)-Y_i(0))]+E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]
+\end{aligned}
+\]
+\item Thus, $E[Y_i|Z_i=1]-E[Y_i|Z_i=0]=E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Identifying LATE: Break down $E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]$}
+\begin{itemize}
+\item This is equal to
+\small{\[
+\begin{aligned}
+E[(Y_i(1)-Y_i(0))(X_i(1)-X_i(0))]&=1\times E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]\Pr(X_i(1)-X_i(0)=1)\\
+&+0\times E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=0]\Pr(X_i(1)-X_i(0)=0)\\
+&=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]\Pr(X_i(1)-X_i(0)=1)\\
+\end{aligned}
+\]}\normalsize
+\item We now have treatment effect for complier groups only
+\item Use counterfactuals for $X_i$ to get
+\[
+\begin{aligned}
+E[X_i|Z_i] &= Z_i E[X_i(1)|Z_i] + (1-Z_i)E[X_i(0)|Z_i]\\
+\implies E[X_i|Z_i=1] &=E[X_i(1)|Z_i=1]=E[X_i(1)]\\
+\implies E[X_i|Z_i=0] &=E[X_i(0)|Z_i=0]=E[X_i(0)]\\
+\end{aligned}
+\]
+\item We can get this probability using observables!
+\small{\[
+\begin{aligned}
+E[X_i|Z_i=1]-E[X_i|Z_i=0]&=E[X_i(1)]-E[X_i(0)]=E[X_i(1)-X_i(0)]=\Pr(X_i(1)-X_i(0)=1)
+\end{aligned}
+\]}\normalsize
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Identifying LATE: Combine all steps}
+\begin{itemize}
+\item If we combine all the steps, we get
+\small{\begin{gather*}
+E[Y_i|Z_i=1]-E[Y_i|Z_i=0]=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1](E[X_i|Z_i=1]-E[X_i|Z_i=0])\\
+\implies\frac{E[Y_i|Z_i=1]-E[Y_i|Z_i=0]}{E[X_i|Z_i=1]-E[X_i|Z_i=0]}=E[Y_i(1)-Y_i(0)|X_i(1)-X_i(0)=1]=LATE
+\end{gather*}}\normalsize
+\item Denominator is only defined if LATE2 assumption is satisfied. (Replace $E[X_i|\cdot]$ with $\Pr(X_i=1|\cdot)$ to get this, which works since $X_i$ is binary)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Estimating LATE}
+\begin{itemize}
+\item We can find a sample analogue (separate sample for $Z=1$ and $Z=0$)
+\item We can also get this as a Wald estimate - ratio of two separate reduced form regression coefficients. Start with
+\[
+\begin{aligned}
+Y_i &= \beta_0+\beta_1Z_i + e_i\\
+X_i & = \gamma_0+\gamma_1Z_i + u_i
+\end{aligned}
+\]
+Then, assuming that $Z_i$ is independent of both $e_i$ and $u_i$, we get
+\[
+E[Y_i|Z_i=1]-E[Y_i|Z_i=0] = \beta_1, \ \ E[X_i|Z_i=1]-E[X_i|Z_i=0] = \gamma_1
+\] 
+Therefore, $LATE = \frac{\beta_1}{\gamma_1}$, whose estimates can be obtained by $\frac{\hat{\beta_1}}{\hat{\gamma_1}}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Notes on applying LATE}
+\begin{itemize}
+\item This can be applied for RD estimation - fuzzy or sharp. 
+\item $Z_i=1$ if a running variable crosses the threshold so that $i$ is eligible
+\item $X_i$ is a binary variable for participation. 
+\item If RD is sharp, $\gamma_1=1$. If RD is fuzzy, $\gamma_1<1$. 
+\item $\beta_1$ would be the treatment effect difference between those who passes the threshold vs. those who do not. 
+\item The treatment effect in RD can be obtained by dividing between $\beta_1$ and $\gamma_1$. 
+\item In general, LATE  identifies a treatment effect for an unidentifiable segment of the population. IRL, difficult to identify compliers! 
+\item Furthermore, the definition of compliers change with the definition of $Z_i$. So interpretation of LATE is tricky.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%
+\end{document}
