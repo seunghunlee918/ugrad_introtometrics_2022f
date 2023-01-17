@@ -1,0 +1,27 @@
+{\rtf1\fs24
+\trowd\trgaph75\trleft-75\intbl\trqc\clbrdrt\brdrs\cellx2448\clbrdrt\brdrs\cellx3744\clbrdrt\brdrs\cellx5040\clbrdrt\brdrs\cellx6336
+\ql \cell\qc (1)\cell\qc (2)\cell\qc (3)\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2448\cellx3744\cellx5040\cellx6336
+\trowd\trgaph75\trleft-75\trqc\clbrdrb\brdrs\cellx2448\clbrdrb\brdrs\cellx3744\clbrdrb\brdrs\cellx5040\clbrdrb\brdrs\cellx6336
+\ql VARIABLES\cell\qc reg\cell\qc areg\cell\qc xtreg\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2448\cellx3744\cellx5040\cellx6336
+\ql \cell\qc \cell\qc \cell\qc \cell\row
+\ql log_pl\cell\qc 0.525***\cell\qc 0.525***\cell\qc 0.525***\cell\row
+\ql \cell\qc (0.147)\cell\qc (0.147)\cell\qc (0.140)\cell\row
+\ql log_pm\cell\qc 0.209***\cell\qc 0.209***\cell\qc 0.209***\cell\row
+\ql \cell\qc (0.037)\cell\qc (0.037)\cell\qc (0.035)\cell\row
+\ql log_pf\cell\qc 0.110\cell\qc 0.110\cell\qc 0.110\cell\row
+\ql \cell\qc (0.084)\cell\qc (0.084)\cell\qc (0.081)\cell\row
+\ql log_stage\cell\qc 0.943***\cell\qc 0.943***\cell\qc 0.943***\cell\row
+\ql \cell\qc (0.215)\cell\qc (0.215)\cell\qc (0.206)\cell\row
+\ql reg\cell\qc 0.060*\cell\qc 0.060*\cell\qc 0.060*\cell\row
+\ql \cell\qc (0.034)\cell\qc (0.034)\cell\qc (0.033)\cell\row
+\ql \cell\qc \cell\qc \cell\qc \cell\row
+\ql Observations\cell\qc 268\cell\qc 268\cell\qc 268\cell\row
+\ql R-squared\cell\qc 0.98\cell\qc 0.98\cell\qc 0.92\cell\row
+\trowd\trgaph75\trleft-75\trqc\trbrdrb\brdrs\clbrdrb\brdrs\cellx2448\clbrdrb\brdrs\cellx3744\clbrdrb\brdrs\cellx5040\clbrdrb\brdrs\cellx6336
+\ql Number of entity\cell\qc \cell\qc \cell\qc 23\cell\row
+\pard\qc
+Robust standard errors in parentheses\par
+*** p<0.01, ** p<0.05, * p<0.10\par
+}

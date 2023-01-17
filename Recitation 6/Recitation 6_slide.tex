@@ -1,0 +1,368 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 6 (UN 3412)]{Recitation 6: Assessing the models and Panel regression} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[October 27th, 2022]{October 27th, 2022}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Assessing the regression model}}
+       \end{center}
+\end{transitionframe}
+
+
+
+\begin{frame}
+\frametitle{Critiquing the regressions}
+\begin{itemize}
+\item \textbf{External validity} is concerned with the applicability of the regression model to other contexts. 
+\begin{itemize}
+\item For instance, you may wonder whether regression model from schools in California could explain what happens in the classrooms in South Korea
+\item Any critiques to the model questioning the replicability of the  result to other dataset is assessing the external validity. 
+\end{itemize}
+\item \textbf{Internal validity} assesses the model from the point of view of the population being studied. 
+\begin{itemize}
+\item This approaches questions the validity of the statistical inference within the given dataset. There are five threats to internal validity.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Is the model itself set properly?}
+\begin{itemize}
+\item \textbf{Omitted variable bias: } Did the researcher left out factors that could affect $Y$ and are correlated with $X$? 
+\item \textbf{Wrong functional form: } Did the researcher incorporate $X$ in a proper functional form? (quadratic, logs?)
+\item \textbf{Errors in variables bias: } Measurement error. If $X$ does not have a clear cut measure, part of $X$ correlated to $Y$ and the observed version of $X$ is left out, resulting in attenuation bias
+\item \textbf{Sample selection bias: }  If certain groups are more likely to not respond, then the data fails to represent population and the estimates based on this data is biased.
+\item \textbf{Simultaneous causality bias: } There are cases where $Y$ causes $X$ too, also leading to the bias (consider supply and demand)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Dealing with omitted variable bias}
+\begin{itemize}
+\item We know OVB is a problem if 
+\begin{itemize}
+\item that variable is a determinant of the dependent variable
+\item that  variable is correlated with a regressor already in the model
+\end{itemize}
+\item Easy: Including the omitted variable itself or putting in relevant control variables
+\item Challenging ones
+\begin{itemize}
+\item \textbf{Instrumental variables :} The idea is to find another variable ($Z$) that is relevant to the included regressor that may be endogenous and does not affect the outcome on its own (only affect outcome through its relationship with the included regressors). \medskip
+\item \textbf{Panel regression :} Each entity is observed across multiple time periods. Control for unobservable time-invariant characteristics of the individual (Individual fixed effects) and characteristics that are common across all individuals in that period (Time fixed effects). 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Wrong functional forms}
+\begin{itemize}
+\item This concerns a case where the regression model is in an incorrect form (enforcing linearity when nonlinear regressor can do better)
+\item Can bias the estimates: Effects of $X$ may not be estimated correctly
+\item Include a squared, log, or interacted variables in the equation
+\item A special case of this when a dependent variable is a binary variable. Instead of a linear regression model, we have to use a probit or a logit mode that allows for the parameters to be nonlinear with the regressors
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Measurement error}
+\begin{itemize}
+\item Our independent variables may not always be accurately measured
+\item Classical case: We observe $\tilde{X}_i$ instead of $X_i$, where $\tilde{X}_i = X_i + w_i$
+\item $w_i$ term satisfies $E[w_i]=0, cov(X_i,w_i)=0, cov(u_i,w_i)=0$
+\item OLS estimate is biased towards zero: Probability limit of OLS estimate is
+\[
+\hat{\beta}_1 \xrightarrow{p} \beta_1\left(\frac{\sigma_X^2}{\sigma_X^2+\sigma_w^2} \right)\
+\]
+\item Best guess error: Guess of $X_i$ is precise conditional on observables ($\tilde{X}_i=E[X_i|W_i]$, where $E[u_i|W_i]=0$)
+\begin{itemize}
+\item No bias: We get $cov(\tilde{X}_i, u_i-\beta_1w_i)=0$ (Above, we have this equal to $-\sigma_w\beta_1$)
+\item Rare: Guess has to be precise (no error at all)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Selection bias and simultaneous causality}
+\begin{itemize}
+\item Selection bias
+\begin{itemize}
+\item Does our sample match the population of interest?
+\item Missing data: Not too worrisome if missing at random or based on some observable $X$ (include $X$ as controls)
+\item Missing based on $Y$: Sample is selected based on outcome, signaling bias in estimates. 
+\item In order to address selection, either we have to adjust the population of interest or have a separate regression where we model selection into treatment
+\end{itemize}
+\item Reverse causality
+\begin{itemize}
+\item IRL, $Y$ might cause $X$ (Think about price and quantity)
+\item We need to model for exogenous changes that affects one part of the causal chain but not the other using instrumental variables or explicitly model for both causations using structural approach
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Panel regression model}}
+       \end{center}
+\end{transitionframe}
+
+
+\begin{frame}
+\frametitle{Motivation and advantages for panel estimation}
+
+\begin{itemize}
+\item \textbf{Panel data}: We observe multiple individuals for multiple periods of time.
+\[
+Y_{it} = \beta_0 + \beta_1X_{1,it}+ ... +\beta_kX_{k,it}+u_{it}
+\]
+$i=1,2,...,N \to$  individuals, $t=1,2,...,T\to$  time periods.
+\item Balanced: There are $T$ datasets for each of the $N$ individuals.
+\item Unbalalced: There are $t\leq T$ datapoints for some of the $N$ individuals.
+\end{itemize}
+
+
+\begin{itemize}
+\item Panel data allows us to use more datasets. 
+\item Panel data allows us to control for \textbf{unobserved heterogeneity} that are
+\begin{enumerate}
+\item  different accross $N$ entities but always remain same for $T$ periods in a given entity (\textbf{cross section fixed effect})
+\item different accross $T$ times periods but remains the same for all $N$ entities in a particular time period  (\textbf{time fixed effects})
+\item both of 1) and 2). (\textbf{two-way fixed effects})
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What OVB problems could we be dealing with?}
+\begin{itemize}
+\item Suppose that $T=2$ and we are interested in the relationship between vehicle related fatality rate (deaths per 10,000 people) and the beer tax. Suppose that we get these result for the two years
+\[
+\begin{aligned}
+\hat{Y}_{i1} =&2.01 +&0.15X_{i1}\\
+                    &(0.15)&(0.20) \\
+\hat{Y}_{i2} =&1.86 +&0.44X_{i2}\\
+                    &(0.11)&(0.20) \\                    
+\end{aligned}
+\]
+\item  In such case, one might suspect that there is an omitted variable bias that affects these coefficients.
+\begin{itemize}
+\item Omitted variable specific to the states (Strictness of the relevant law)
+\item Time-trends? (Specific to each of years 1 and 2)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{How can panel regression do better?}
+\begin{itemize}
+\item Let $Z_i$ denote the strictness of state laws on DUI that are unchanging. 
+\item Now write
+\[
+\begin{aligned}
+Y_{i1}& = \beta_0 + \beta_1X_{i1}+\beta_2 Z_{i}+u_{i1} \\                
+Y_{i2}& = \beta_0 + \beta_1X_{i2}+\beta_2 Z_{i}+u_{i2} \\                
+\end{aligned}
+\]
+\item Subtract the second equation from the first to get
+\[
+(Y_{i2}-Y_{i1}) = \beta_1(X_{i2}-X_{i1}) +\beta_2(Z_{i}-Z_{i}) + u_{i2}-u_{i1}
+\]
+With $Z_i$ being the same for all periods, the above equation is reduced to
+\[
+(Y_{i2}-Y_{i1}) = \beta_1(X_{i2}-X_{i1}) +(u_{i2}-u_{i1})
+\]
+\item The $Z_i$ variable has no role in this equation - because it is now gone.
+\item If we estimate this particular $\beta_1$, we can obtain much more accurate estimates of the effect of beer tax on fatality rate. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Specific methodologies for cross-sectional FE}
+\begin{itemize}
+\item There are two ways of estimating the data when $T\geq 3$
+\item Least square dummy variables (LSDV): Include $N-1$ individual dummies
+\item Within estimation: Subtract ``demeaned" equation from the original
+\item Use: 
+\[
+Y_{it}=\beta_0 + \beta_1X_{it}+\beta_2 Z_{i}+u_{it} \tag{1}
+\]
+where $Z_i$ is the cross section fixed effect.
+\item Define  $\alpha_i = \beta_0 + \beta_1Z_i$. Then the above equation can be written as
+\[
+Y_{it}=\beta_1X_{it}+\alpha_{i}+u_{it} \tag{2}
+\]
+\item $\alpha_i$ term can be thought of as an effect of being an entity $i$, which is \textbf{correlated with} $X_{it}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LSDV method}
+\begin{itemize}
+\item Define a new variable $D_{ki}$ as follows
+\[
+D_{ki} = \begin{cases} 1 & \text{If $i=k$} \\
+                                     0 & \text{Otherwise } \end{cases} , \ k\in\{1,2,...,N\}
+\] 
+\item Since we are going to include $\beta_0$, a common intercept, in our regression we need to remove one of the $N$ (dummy variable trap)
+\item Then we can write
+\[
+Y_{it} = \beta_0 +\beta_1X_{it}+\delta_2D_{2i} + ... + \delta_ND_{Ni}+u_{it} \ \tag{LSDV}
+\]
+\item This equation gives different intercepts for each $i$ (can you see why?), while keeping the slope on $X_{it}$ constant at $\beta_1$ 
+\item Control for unobserved cross section fixed effect by allowing the intercept to differ by each $i$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Within estimation methods}
+\begin{itemize}
+\item Define $\bar{X}_i, \bar{Y}_i$ as sample mean of $X_{it}, Y_{it}$ for given $i$ over all possible $t$'s. 
+\[
+\bar{X}_i = \frac{1}{T}\sum_{t=1}^TX_{it}
+\]
+Consequently, $\bar{Y}_i$ can be written as
+\[
+\bar{Y}_i = \frac{1}{T}\sum_{t=1}^TY_{it}=\frac{1}{T}\sum_{t=1}^T\left(\beta_1 X_{it} +\alpha_i +u_{it}\right)=\beta_1 \bar{X}_i +\alpha_i + \bar{u}_{i}
+\]
+\item Subtract $Y_{it}$ by $\bar{Y}_i$ to get
+\[
+\begin{aligned}
+Y_{it}-\bar{Y}_i &= \beta_1(X_{it}-\bar{X}_i) + (u_{it}-\bar{u}_i) \implies \tilde{Y}_{it}= \beta_1 \tilde{X}_{it}+\tilde{u}_{it}\\
+\end{aligned}
+\]
+\item This process gets rid of $\alpha_i$. Then, apply OLS estimation on this equation to get the within estimator
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Having both FEs with two-way fixed effects}
+\begin{itemize}
+\item We have a DGP
+\[
+Y_{it}=\beta_1 X_{it} + \alpha_i +\lambda_t + u_{it}
+\]
+\item LSDV: With an overall constant $\beta_0$, we can put $N-1$ individual and $T-1$ time dummies
+\item WE: Demeaning should be done in the following method
+\[
+Y_{it}-\bar{Y}_i -\bar{Y}_t +\bar{Y}
+\]
+This (and only this) would allow us to get rid of both the $\alpha_i$ individual fixed effect and the $\lambda_t$ time effects
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Least square assumptions for panels}
+
+\begin{itemize}
+\item  [\textbf{P1}]: $E[u_{it}|X_{i1},..,X_{iT},\alpha_i]=0$. It means that the conditional mean of the $u_{it}$ term does not depend on any of the $X_{it}$ values for entity $i$, whether in the future or in the past. 
+\item [\textbf{P2}]: $(X_{i1},..,X_{iT},u_{i1},...u_{iT})$ is IID across $i=1,..,n$. \textbf{This does not rule out the correlation between $u_{it},u_{ij}$ within entity $i$ for different $j$ and $t$}, allowing serial correlation within the same entity
+ \item[\textbf{P3}]: $(X_{it},u_{it})$ have nonzero finite fourth moments (outliers are very unlikely) so that the panel estimators have a distribution
+\item [\textbf{P4}]: There is no perfect multicollinearity
+\item [\textbf{P5}]: $X_{it}$ varies across time (for $\hat{\beta}_1$ to be defined)
+\end{itemize}
+$\to$ Because of P2, we need to use \textbf{clustered standard error} at a cross-sectional level.
+\end{frame}
+
+
+
+%%%%%%%%%%%
+\end{document}

@@ -1,0 +1,244 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 7 (UN 3412)]{Recitation 7: Binary dependent variable} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[November 3rd, 2022]{November 3rd, 2022}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Binary dependent variable model}}
+       \end{center}
+\end{transitionframe}
+
+
+\begin{frame}
+\frametitle{Binary dependent variables: What do we do now?}
+\begin{itemize}
+\item $Y_i$ now  takes either 0 or 1 (Think of yes-no questions)
+\item Assume that we are interested in how $X_i$ affects responses to yes-no quesitons
+\[
+Y_i = \beta_0 + \beta_1 X_i +u_i
+\]
+\item Non-regressional definition: We look at $E[Y_i|X_i]$, which can be broken into 
+\[
+E[Y_i|X_i] = 0\times\Pr(Y_i=0|X_i)+1\times\Pr(Y_i=1|X_i)
+\]
+\item Or in the regression equation context, 
+\[
+\begin{aligned}
+E[Y_i|X_i]&=E[\beta_0+\beta_1X_i+u_i|X_i]\\
+&=\beta_0 + \beta_1X_i + E[u_i|X_i]\\
+(\because  E[u_i|X_i]=0)&=\beta_0 + \beta_1X_i 
+\end{aligned}
+\]
+or the probability of $Y_i=1$ given $X_i$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Binary dependent variables: Interpreting main coefficient of interest}
+\begin{itemize}
+\item Notice that $\beta_1 =\frac{\Delta Y_i}{\Delta X_i}$ and $\Delta Y_i = \text{Change in }\Pr(Y_i=1|X_i)$ with respect to change in $X_i$ , or
+\[
+\Delta Y_i = \Pr(Y_i=1|X_i=x+\Delta X_i)-\Pr(Y_i=1|X_i=x)
+\]
+\item Since $\Pr(Y_i=1|X_i=x+\Delta X_i)-\Pr(Y_i=1|X_i=x)=E[Y_i|X_i=x+\Delta X_i]-E[Y_i|X_i=x]$, we get
+\[
+\beta_0+\beta_1(x+\Delta X_i)-\beta_0+\beta_1(x) =\beta_1 \Delta X_i
+\]
+\item So we get $\Delta Y_i = \beta_1\Delta X_i\iff\beta_1 =\frac{\Delta Y_i}{\Delta X_i}$. Therefore, $\beta_1$ now measures how much the predicted probability of $Y_i=1$ changes with respect to $X_i$ (percentage points!)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Simplest approach: Linear probability models}
+\begin{itemize}
+\item \textbf{Linear probability model} is the estimation in which you run an OLS on the type of regression equation where $Y_i$ is a binary dependent variable.
+\item The advantage is that it is simple - there is no difference in terms of methods between this and the OLS methods we have learned so far. 
+\item However, there are some critical disadvantages to this model. 
+\begin{itemize}
+\item By setting the regression model as above, we are assuming that the change of predicted probability of $Y_i=1$ is constant for all values of $X_i$. 
+\item More critically, it is possible that the predicted probability $\hat{y}$ may be greater than 1 or strictly less than 0.
+\item The distribution of the error term is no longer normal distribution, potentially affecting the asymptotic properties of the OLS estimators.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Setting up logit regression}
+\begin{itemize}
+\item Logit regression: Let $Z_i=\beta_0+\beta_1X_i$. 
+\item Logit regression assumes that  $\Pr(Y_i=1|X_i)$  is distributed as
+\[
+\Pr(Y_i=1|X_i)=F(Z_i)=\frac{1}{1+e^{-Z_i}}
+\]
+\item Changes in $X_i$ affect the probability $F(Z_i)$ in this manner
+\[
+\frac{\partial F}{\partial X_i} = \frac{\partial F}{\partial Z_i}\frac{\partial Z_i}{\partial X_i}  
+\]
+where $\frac{\partial Z_i}{\partial X_i}  =\beta_1$
+\item  Value of $\beta_1$ does not mean that much in. Its sign does, since
+\[
+ \frac{\partial F}{\partial Z_i}=\frac{e^{-\beta_0 -\beta_1X_i}}{(1+e^{-\beta_0 -\beta_1X_i})^2}>0
+\]
+This implies that the sign of $\frac{\partial F}{\partial X_i}$ entirely depends on that of $\frac{\partial Z_i}{\partial X_i} = \beta_1$!
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Using normal CDF: Probit regression}
+\begin{itemize}
+\item Probit regression: Let $Z_i=\beta_0+\beta_1X_i$. 
+\item Probit regression assumes that $\Pr(Y_i=1|X_i)$  is a standard normal distribution
+\[
+\Pr(Y_i=1|X_i)=F(Z_i)=\Phi(Z_i)=\Phi(\beta_0+\beta_1X_i)
+\]
+where $\Phi(v)$ means the cumulative normal function $\Pr(Z\leq v)$
+\item Again, taking the similar approach as before, 
+\[
+\frac{\partial F}{\partial X_i} = \frac{\partial F}{\partial Z_i}\frac{\partial Z_i}{\partial X_i} 
+\]
+and $\frac{\partial F}{\partial Z_i}$ is the pdf of a standard normal distribution (which is nonnegative).
+\item Again, sign of $\frac{\partial F}{\partial X_i}$ depends on that of $\beta_1$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Different approach to regression: Maximum likelihood estimators}
+\begin{itemize}
+\item Both probit and logit are nonlinear: $\beta_0, \beta_1$ parameters are no longer in linear relationship with the $X_i's$ and subsequently $Y_i$'s
+\item A \textbf{likelihood function} is the conditional density of $Y_1,...,Y_n$ given $X_1,...,X_n$ that is treated as the function of the unknown parameters ($\beta_0, \beta_1$ in our case)
+\item What we are trying to do here is to find the values of $\beta_i$'s that best matches the values of $X_i$'s and $Y_i$'s
+\item \textbf{Maximum likelihood estimators} is the value of $\beta_i$'s that best describes the data and maximizes the value of the likelihood function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum likelihood estimators in practice}
+\begin{itemize}
+\item Assume $Y_i$'s are IID normal with mean $\mu$ and standard error $\sigma$ (both are unknown)
+\item The joint probability of $Y_i$'s are (our likelihood function)
+\[
+\begin{aligned}
+\Pr(Y_1=y_1,...,Y_n=y_n|\mu,\sigma)&=\Pr(Y_1 = y_1|\mu,\sigma)\times..\times\Pr(Y_n=y_n|\mu,\sigma)\\
+&=\prod_{i=1}^nf(y_i|\mu,\sigma)\\
+&=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(Y_i-\mu)^2}{2\sigma^2}}\\
+&=(2\pi)^{-\frac{n}{2}} (\sigma^2)^{-\frac{n}{2}}e^{-\sum_{i=1}^n\frac{(Y_i-\mu)^2}{2\sigma^2}}\\
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum likelihood estimators in practice}
+\begin{itemize}
+\item Calculation is made easier by using log-likelihood functions (take logs to likelihood functions)
+\[
+-\frac{n}{2}\ln{(2\pi)}-\frac{n}{2}\ln{\sigma^2}-\sum_{i=1}^n\frac{(Y_i-\mu)^2}{2\sigma^2} 
+\]
+\item We differentiate the above with respect to $\mu$ and $\sigma$ to find the MLE of these parameters.
+\item This gets us
+\[
+\begin{aligned}
+\mu_{MLE}&=\frac{1}{n}\sum_{i=1}^nY_i\\
+\sigma^2_{MLE}&=\frac{1}{n}\sum_{i=1}^n(Y_i-\mu_{MLE})^2
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%
+\end{document}
