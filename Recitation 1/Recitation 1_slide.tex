@@ -1,0 +1,306 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 1 (UN 3412)]{Recitation 1: Understanding Stata and Randomized Control Trials} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[September 14th, 2021]{September 14th, 2021}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Logistics of the recitation}}
+       \end{center}
+\end{transitionframe}
+
+
+
+
+
+\begin{frame}
+\frametitle{Recitation Logistics}
+\begin{wideitemize}
+\item Location: 602 Northwest Corner Building
+\item Time: Thursdays 1PM-2PM 
+\begin{itemize}
+\item 30-40 minutes will be spent on reviewing materials from the lecture, the rest will be spent on Stata demonstrations. 
+\item Pending room availability, I will stay an extra 10-20 minutes to answer your questions
+\item Recitation notes to be posted by noon on Thursdays for you to download.
+\item Slides will be posted AFTER the recitation (before midnight on Thursdays).
+\end{itemize}
+\item Office Hours
+\begin{itemize}
+\item Zoom (\href{https://columbiauniversity.zoom.us/j/96949225512?pwd=bTgwKytIVHpmNVloU0hNOEFxQ3J3UT09}{Click here to join}) and Lehman 327 (So technically hybrid)
+\end{itemize}
+\item Further materials
+\begin{itemize}
+\item You can go \href{https://github.com/seunghunlee918/ugrad_introtometrics_2021f}{here} for my old recitation materials
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Econometrics and RCT}}
+       \end{center}
+\end{transitionframe}
+
+\begin{frame}
+\frametitle{What is econometrics trying to achieve?}
+\begin{wideitemize}
+\item Econometrics is a field in economics that tries to answer real life questions.  
+\begin{itemize}
+\item Ultimately, it is about making a \textbf{quantitative} statement about two or more random events
+\item We can make \textbf{correlational} statements, but we want to identify \textit{causal relationships}
+\end{itemize}
+\item In order to achieve this goal, we collect data from a suitably defined population and use various methods to estimate a parameter that implies correlational/causal relationship.
+\item To fully understand what econometrics is trying to achieve, we need to ask ourselves these three questions
+\begin{itemize}
+\item  What is the difference between correlational and causal relation? 
+\item What is the suitably defined population? 
+\item What are the methods that we need to use in econometrics?
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Correlation vs Causation}
+\begin{wideitemize}
+\item Suppose you have two random variables $X$ and $Y$. You want to identify if $X$ \textit{causes} $Y$
+\item A \textbf{correlation} between $X$ and $Y$ is a statistical measure that describes how the two variables move together
+\begin{itemize}
+\item It captures \textit{any} type of statistical dependence that moves the two variables together: Causation, but also others too!
+\item Not causal 1: $Y$ can cause $X$
+\item Not causal 2: $X$ and $Y$ are jointly moving because there is $Z$ that affects both
+\end{itemize}
+\item A \textbf{causal} relationship: \textit{Cleanly (exogenously)} changing variables $X$ leads to changes in $Y$
+\begin{itemize}
+\item Much more difficult: Changes in $X$ may be a combination of many things
+\item Changes from $X$ alone and changes from other factors that may indirectly affect $X$
+\item RCT: Isolates clean changes in $X$ that can help us tell whether changes in $X$ affects $Y$, and by how much
+\item Econometrics: We can express concisely the relationship between $X$ and $Y$ variables in a single equation. 
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Suitably defined population?}
+\begin{wideitemize}
+\item When we say we are interested in the relationship between schooling and wages, whose effects are we interested in? 
+\begin{itemize}
+\item The entire US population, high school graduates, or college graduates?  
+\item Determines sampling methods we use to obtain a representative and comparable sample
+\item Complete randomization, stratified randomization, or cluster randomization
+\end{itemize}
+\item  Note: We are almost surely never going to get the data from the entire population. 
+\begin{itemize}
+\item Gathering data from the entire population is logistically (and maybe ethically) difficult. 
+\item The estimate we are obtaining through any econometric exercise is thus a \textit{sample analogue} of the actual value we are trying to get
+\item We will do diagnostic tests to see if they can be reasonably close to the true value. 
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What methods?}
+\begin{wideitemize}
+\item In econometrics, we will use many estimation methods to obtain the sample analogue of the parameter of interest. 
+\begin{itemize}
+\item Ordinary least squares (OLS): Suitable for randomized control trials or in any case where the treatment assignment is as good as random.
+\item Panel estimation: If data has multiple individuals and multiple time periods.
+\item Instrumental variable methods: When we have proxy variables relevant to variable of interest and is reasonably exogenous
+\item Difference-in-differences: When we study `before \& after' events with multiple entities
+\item Regression discontinuity: In treatment with a cutoff determining treatment assignment
+\item Time series: When we observe one entity over multiple periods 
+\end{itemize}
+\item Depending on the type of variables we use in our exercise, we have:
+\begin{itemize}
+\item Univariate regression: One variable (besides an overall constant) controlled for
+\item Multivariate regression: Multiple variables (besides an overall constant) controlled for
+\item Nonlinear regression: Binary dependent variables
+\item Big data methods
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Understanding RCTs}
+\begin{wideitemize}
+\item In \textbf{randomized control trials}, we randomly categorize some individuals under treatment group and controlled group and run various tests
+\begin{itemize}
+\item Benchmark for good program evaluation
+\end{itemize}
+\item Potential outcomes framework
+\begin{itemize}
+\item $Y_i$ : Observed outcome for individual $i\in\{1,...,N\}$
+\item $i$: Either in treatment or control group (not both)$\to$ $W_i=1$ if $i$ is treated, 0 if otherwise
+\item $\mathbf{W}$:  an $N$-tuple vector of treatment assignment for all individuals
+\item Key assumption: Others' treatment assignment has no effect on my treatment (stable unit treatment value assumption (SUTVA))
+\item Potential outcome $Y_i(w)$: Outcome for treated ($Y_i(1)$) and the untreated individual ($Y_i(0)$)
+\begin{itemize}
+\item Fundamental problem of missing data: Individual $i$ cannot have both $Y_i(1)$ and $Y_i(0)$ - at most one of them
+\end{itemize}
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Potential vs observed outcome}
+\begin{wideitemize}
+\item We can bridge the two with this relation
+\[
+\begin{aligned}
+Y_ i &= Y_i(1)W_i + Y_i(0)(1-W_i)\\
+&=Y_i(0)+W_i(Y_i(1)-Y_i(0))\\
+\end{aligned}
+\]
+\begin{itemize}
+\item We know $W_i$ and $Y_i$ for everyone regardless of treatment assignment
+\item We cannot see $Y_i(0)$ for the treated group and $Y_i(1)$ for the untreated group
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Treatment effect}
+\begin{wideitemize}
+\item If we want to see if the treatment has any effect, we would ideally see
+\[
+Y_i(1)-Y_i(0)
+\]
+\item But they cannot be obtained b/c fundamental problem of missing data
+\begin{itemize}
+\item Alternative is average treatment effect or average treatment effect on the treated
+\[
+\begin{aligned}
+\text{ATE}&=E[Y_i(1)-Y_i(0)]\\
+\text{ATT}&=E[Y_i(1)-Y_i(0)|W_i=1]
+\end{aligned}
+\]
+\item We also need assumptions about our treatment: Randomized assignment is one of them
+\[
+\begin{aligned}
+E[Y_i(1)]&= E[Y_i(1)|W_i=1]=E[Y_i(1)|W_i=0] \\
+E[Y_i(0)]&= E[Y_i(0)|W_i=1]=E[Y_i(0)|W_i=0] 
+\end{aligned}
+\]
+\end{itemize}
+ \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Obtaining ATE}
+\begin{wideitemize}
+\item With this assumption and the definition of potential outcomes framework
+\[
+\begin{aligned}
+E[Y_i|W_i]&=E[Y_i(1)W_i + Y_i(0)(1-W_i)|W_i]\\
+&=E[Y_i(1)|W_i]W_i+E[Y_i(0)|W_i](1-W_i)\\
+&=E[Y_i(1)]W_i+E[Y_i(0)](1-W_i)\\
+\end{aligned}
+\]
+\begin{itemize}
+\item $W_i=1$: Get $E[Y_i(1)]=E[Y_i|W_i=1]$.
+\item $W_i=0$: Get $E[Y_i(0)]=E[Y_i|W_i=0]$. 
+\end{itemize}
+\item Under random assignment, we can identify the average treatment effect as
+\[
+\text{ATE}=E[Y_i(1)]-E[Y_i(0)] = E[Y_i|W_i=1]-E[Y_i|W_i=0]
+\]
+\item Econometrically: OLS with $W_i$ as independent variable (Problem set 2!)
+ \end{wideitemize}
+\end{frame}
+%%%%%%%%%%%
+\end{document}

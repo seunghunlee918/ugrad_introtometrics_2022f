@@ -1,0 +1,357 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/GoogleDrive/내 드라이브/TA work/Fall 2022 - Intro to Econometrics/Recitation/Recitation 1/demo/log_demo.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}15 Sep 2022, 13:53:01
+{txt}
+{com}. 
+. ** Summary statistics
+. summarize /*show summary stats for all variables*/
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}make {c |}{res}          0
+{txt}{space 7}price {c |}{res}         74    6165.257    2949.496       3291      15906
+{txt}{space 9}mpg {c |}{res}         74     21.2973    5.785503         12         41
+{txt}{space 7}rep78 {c |}{res}         69    3.405797    .9899323          1          5
+{txt}{space 4}headroom {c |}{res}         74    2.993243    .8459948        1.5          5
+{txt}{hline 13}{c +}{hline 57}
+{space 7}trunk {c |}{res}         74    13.75676    4.277404          5         23
+{txt}{space 6}weight {c |}{res}         74    3019.459    777.1936       1760       4840
+{txt}{space 6}length {c |}{res}         74    187.9324    22.26634        142        233
+{txt}{space 8}turn {c |}{res}         74    39.64865    4.399354         31         51
+{txt}displacement {c |}{res}         74    197.2973    91.83722         79        425
+{txt}{hline 13}{c +}{hline 57}
+{space 2}gear_ratio {c |}{res}         74    3.014865    .4562871       2.19       3.89
+{txt}{space 5}foreign {c |}{res}         74    .2972973    .4601885          0          1
+{txt}
+{com}. summarize price /*for just one variable*/
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         74    6165.257    2949.496       3291      15906
+{txt}
+{com}. summarize price if weight>2000  /*only for cars weighing above 2000*/
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         67    6320.582    3045.116       3291      15906
+{txt}
+{com}. summarize price if foreign==1 /*only for foreign cars*/
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         22    6384.682    2621.915       3748      12990
+{txt}
+{com}. 
+. summarize price if foreign==1 & weight>2000
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         17    6854.529    2762.253       3748      12990
+{txt}
+{com}. summarize price if foreign==1 | weight>2000
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         72    6214.097    2975.747       3291      15906
+{txt}
+{com}.  
+. sort foreign
+{txt}
+{com}. by foreign: summarize price /*summarize separately by foreign/domestic categories*/
+
+{txt}{hline}
+-> foreign = Domestic
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         52    6072.423    3097.104       3291      15906
+
+{txt}{hline}
+-> foreign = Foreign
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}         22    6384.682    2621.915       3748      12990
+
+{txt}
+{com}. 
+. * Tabulate: A command that spits out frequency tables
+. tabulate foreign /* oneway frequency table for domestic vs foreign*/
+
+ {txt}Car origin {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+   Domestic {c |}{res}         52       70.27       70.27
+{txt}    Foreign {c |}{res}         22       29.73      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         74      100.00
+{txt}
+{com}. tabulate trunk foreign /* twoway frequency table for domestic vs foreign and various trunk sizes*/
+
+     {txt}Trunk {c |}
+space (cu. {c |}      Car origin
+      ft.) {c |}  Domestic    Foreign {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         5 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}         6 {c |}{res}         0          1 {txt}{c |}{res}         1 
+{txt}         7 {c |}{res}         3          0 {txt}{c |}{res}         3 
+{txt}         8 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}         9 {c |}{res}         3          1 {txt}{c |}{res}         4 
+{txt}        10 {c |}{res}         3          2 {txt}{c |}{res}         5 
+{txt}        11 {c |}{res}         4          4 {txt}{c |}{res}         8 
+{txt}        12 {c |}{res}         1          2 {txt}{c |}{res}         3 
+{txt}        13 {c |}{res}         4          0 {txt}{c |}{res}         4 
+{txt}        14 {c |}{res}         1          3 {txt}{c |}{res}         4 
+{txt}        15 {c |}{res}         2          3 {txt}{c |}{res}         5 
+{txt}        16 {c |}{res}        10          2 {txt}{c |}{res}        12 
+{txt}        17 {c |}{res}         8          0 {txt}{c |}{res}         8 
+{txt}        18 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}        20 {c |}{res}         6          0 {txt}{c |}{res}         6 
+{txt}        21 {c |}{res}         2          0 {txt}{c |}{res}         2 
+{txt}        22 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}        23 {c |}{res}         1          0 {txt}{c |}{res}         1 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        52         22 {txt}{c |}{res}        74 
+{txt}
+{com}. 
+. tabulate trunk foreign, row /*percentage for each row variable*/
+{txt}
+{c TLC}{hline 16}{c TRC}
+{c |} Key{col 18}{c |}
+{c LT}{hline 16}{c RT}
+{c |}{space 3}{it:frequency}{col 18}{c |}
+{c |}{space 1}{it:row percentage}{col 18}{c |}
+{c BLC}{hline 16}{c BRC}
+
+     Trunk {c |}
+space (cu. {c |}      Car origin
+      ft.) {c |}  Domestic    Foreign {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         5 {c |}{res}         0          1 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      0.00     100.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         6 {c |}{res}         0          1 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      0.00     100.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         7 {c |}{res}         3          0 {txt}{c |}{res}         3 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         8 {c |}{res}         2          3 {txt}{c |}{res}         5 
+           {txt}{c |}{res}     40.00      60.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         9 {c |}{res}         3          1 {txt}{c |}{res}         4 
+           {txt}{c |}{res}     75.00      25.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        10 {c |}{res}         3          2 {txt}{c |}{res}         5 
+           {txt}{c |}{res}     60.00      40.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        11 {c |}{res}         4          4 {txt}{c |}{res}         8 
+           {txt}{c |}{res}     50.00      50.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        12 {c |}{res}         1          2 {txt}{c |}{res}         3 
+           {txt}{c |}{res}     33.33      66.67 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        13 {c |}{res}         4          0 {txt}{c |}{res}         4 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        14 {c |}{res}         1          3 {txt}{c |}{res}         4 
+           {txt}{c |}{res}     25.00      75.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        15 {c |}{res}         2          3 {txt}{c |}{res}         5 
+           {txt}{c |}{res}     40.00      60.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        16 {c |}{res}        10          2 {txt}{c |}{res}        12 
+           {txt}{c |}{res}     83.33      16.67 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        17 {c |}{res}         8          0 {txt}{c |}{res}         8 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        18 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        20 {c |}{res}         6          0 {txt}{c |}{res}         6 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        21 {c |}{res}         2          0 {txt}{c |}{res}         2 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        22 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        23 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}    100.00       0.00 {txt}{c |}{res}    100.00 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        52         22 {txt}{c |}{res}        74 
+           {txt}{c |}{res}     70.27      29.73 {txt}{c |}{res}    100.00 
+{txt}
+{com}. tabulate trunk foreign, column /*percentage for each column variable*/
+{txt}
+{c TLC}{hline 19}{c TRC}
+{c |} Key{col 21}{c |}
+{c LT}{hline 19}{c RT}
+{c |}{space 5}{it:frequency}{col 21}{c |}
+{c |}{space 1}{it:column percentage}{col 21}{c |}
+{c BLC}{hline 19}{c BRC}
+
+     Trunk {c |}
+space (cu. {c |}      Car origin
+      ft.) {c |}  Domestic    Foreign {c |}     Total
+{hline 11}{c +}{hline 22}{c +}{hline 10}
+         5 {c |}{res}         0          1 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      0.00       4.55 {txt}{c |}{res}      1.35 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         6 {c |}{res}         0          1 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      0.00       4.55 {txt}{c |}{res}      1.35 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         7 {c |}{res}         3          0 {txt}{c |}{res}         3 
+           {txt}{c |}{res}      5.77       0.00 {txt}{c |}{res}      4.05 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         8 {c |}{res}         2          3 {txt}{c |}{res}         5 
+           {txt}{c |}{res}      3.85      13.64 {txt}{c |}{res}      6.76 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+         9 {c |}{res}         3          1 {txt}{c |}{res}         4 
+           {txt}{c |}{res}      5.77       4.55 {txt}{c |}{res}      5.41 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        10 {c |}{res}         3          2 {txt}{c |}{res}         5 
+           {txt}{c |}{res}      5.77       9.09 {txt}{c |}{res}      6.76 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        11 {c |}{res}         4          4 {txt}{c |}{res}         8 
+           {txt}{c |}{res}      7.69      18.18 {txt}{c |}{res}     10.81 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        12 {c |}{res}         1          2 {txt}{c |}{res}         3 
+           {txt}{c |}{res}      1.92       9.09 {txt}{c |}{res}      4.05 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        13 {c |}{res}         4          0 {txt}{c |}{res}         4 
+           {txt}{c |}{res}      7.69       0.00 {txt}{c |}{res}      5.41 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        14 {c |}{res}         1          3 {txt}{c |}{res}         4 
+           {txt}{c |}{res}      1.92      13.64 {txt}{c |}{res}      5.41 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        15 {c |}{res}         2          3 {txt}{c |}{res}         5 
+           {txt}{c |}{res}      3.85      13.64 {txt}{c |}{res}      6.76 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        16 {c |}{res}        10          2 {txt}{c |}{res}        12 
+           {txt}{c |}{res}     19.23       9.09 {txt}{c |}{res}     16.22 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        17 {c |}{res}         8          0 {txt}{c |}{res}         8 
+           {txt}{c |}{res}     15.38       0.00 {txt}{c |}{res}     10.81 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        18 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      1.92       0.00 {txt}{c |}{res}      1.35 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        20 {c |}{res}         6          0 {txt}{c |}{res}         6 
+           {txt}{c |}{res}     11.54       0.00 {txt}{c |}{res}      8.11 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        21 {c |}{res}         2          0 {txt}{c |}{res}         2 
+           {txt}{c |}{res}      3.85       0.00 {txt}{c |}{res}      2.70 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        22 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      1.92       0.00 {txt}{c |}{res}      1.35 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+        23 {c |}{res}         1          0 {txt}{c |}{res}         1 
+           {txt}{c |}{res}      1.92       0.00 {txt}{c |}{res}      1.35 
+{txt}{hline 11}{c +}{hline 22}{c +}{hline 10}
+     Total {c |}{res}        52         22 {txt}{c |}{res}        74 
+           {txt}{c |}{res}    100.00     100.00 {txt}{c |}{res}    100.00 
+{txt}
+{com}. 
+. * Simple t-test for means
+. /* 
+> Say you want to compare the price between foreign and domestic cars and confirm that 
+> foreign cars are more expensive
+> */
+. ttest price, by(foreign)
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. err.{col 47}Std. dev.{col 59}[95% conf. interval]
+{hline 9}{c +}{hline 68}
+Domestic {c |}{res}{col 12}     52{col 22} 6072.423{col 34} 429.4911{col 46} 3097.104{col 58} 5210.184{col 70} 6934.662
+ {txt}Foreign {c |}{res}{col 12}     22{col 22} 6384.682{col 34} 558.9942{col 46} 2621.915{col 58}  5222.19{col 70} 7547.174
+{txt}{hline 9}{c +}{hline 68}
+Combined {c |}{res}{col 12}     74{col 22} 6165.257{col 34} 342.8719{col 46} 2949.496{col 58} 5481.914{col 70}   6848.6
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22}-312.2587{col 34} 754.4488{col 58}-1816.225{col 70} 1191.708
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Domestic{txt}) - mean({res}Foreign{txt})                         t = {res} -0.4139
+{txt}H0: diff = 0                                     Degrees of freedom = {res}      72
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}0.3401         {txt}Pr(|T| > |t|) = {res}0.6802          {txt}Pr(T > t) = {res}0.6599
+{txt}
+{com}. ttest price if length>180, by(foreign) /*only for large cars*/
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. err.{col 47}Std. dev.{col 59}[95% conf. interval]
+{hline 9}{c +}{hline 68}
+Domestic {c |}{res}{col 12}     38{col 22} 6776.026{col 34} 544.7065{col 46} 3357.796{col 58} 5672.346{col 70} 7879.706
+ {txt}Foreign {c |}{res}{col 12}      4{col 22}    10701{col 34} 1101.184{col 46} 2202.367{col 58} 7196.543{col 70} 14205.46
+{txt}{hline 9}{c +}{hline 68}
+Combined {c |}{res}{col 12}     42{col 22} 7149.833{col 34} 532.0569{col 46} 3448.123{col 58} 6075.323{col 70} 8224.344
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22}-3924.974{col 34} 1726.924{col 58}-7415.218{col 70}-434.7295
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Domestic{txt}) - mean({res}Foreign{txt})                         t = {res} -2.2728
+{txt}H0: diff = 0                                     Degrees of freedom = {res}      40
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}0.0142         {txt}Pr(|T| > |t|) = {res}0.0285          {txt}Pr(T > t) = {res}0.9858
+{txt}
+{com}. 
+. * Graphs
+. histogram length /*make histogram using headroom */
+{txt}(bin={res}8{txt}, start={res}142{txt}, width={res}11.375{txt})
+{res}{txt}
+{com}. graph export "$reci1/histogram_length.png", replace /*you can use other extensions like .jpg or .gph */
+{txt}{p 0 4 2}
+file {bf}
+/Volumes/GoogleDrive/내 드라이브/TA work/Fall 2022 - Intro to Econometrics/Recitation/Recitation 1/demo/histogram_length.png{rm}
+saved as
+PNG
+format
+{p_end}
+
+{com}. 
+. * graphs with two variables
+. /*
+> Useful for summarizing relationship between the two variables visually
+> Say that you want correlation between price and length of cars 
+> (i.e. longer cars are more expensive)
+> */
+. twoway scatter price length /*price in y, length in x */
+{res}{txt}
+{com}. graph export "$reci1/scatterplot.png", replace
+{txt}{p 0 4 2}
+file {bf}
+/Volumes/GoogleDrive/내 드라이브/TA work/Fall 2022 - Intro to Econometrics/Recitation/Recitation 1/demo/scatterplot.png{rm}
+saved as
+PNG
+format
+{p_end}
+
+{com}. 
+. * fancier graphs with a line and scatter plot
+. twoway (scatter price length) (lfit price length)
+{res}{txt}
+{com}. graph export "$reci1/scatterlineplot.png", replace
+{txt}{p 0 4 2}
+file {bf}
+/Volumes/GoogleDrive/내 드라이브/TA work/Fall 2022 - Intro to Econometrics/Recitation/Recitation 1/demo/scatterlineplot.png{rm}
+saved as
+PNG
+format
+{p_end}
+
+{com}. 
+. * ends logs (you need this before you move on to other Stata project!)
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/GoogleDrive/내 드라이브/TA work/Fall 2022 - Intro to Econometrics/Recitation/Recitation 1/demo/log_demo.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}15 Sep 2022, 13:53:05
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
