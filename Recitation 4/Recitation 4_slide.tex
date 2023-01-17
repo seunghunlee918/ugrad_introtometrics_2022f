@@ -1,0 +1,426 @@
+\documentclass[aspectratio=169]{beamer}
+
+\mode<presentation>
+\usetheme{Boadilla}
+\definecolor{Khaki}{RGB}{144,110,62}
+\definecolor{blue}{RGB}{30,90,205}
+\definecolor{red}{RGB}{213,94,0}
+\definecolor{green}{RGB}{0,128,0}
+\setbeamercolor{title}{fg=Khaki}
+\setbeamercolor{frametitle}{fg=Khaki}
+\setbeamercolor{block title}{bg=Khaki, fg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamercolor{structure}{fg=Khaki}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{item}{fg=Khaki}
+\setbeamercolor{subitem}{fg=Khaki}
+\setbeamercolor{section in toc}{fg=Khaki}
+\setbeamercolor{description item}{fg=Khaki}
+\setbeamercolor{caption name}{fg=Khaki}
+\setbeamercolor{button}{bg=Khaki, fg=white}
+\setbeamercolor{caption name}{fg=Khaki}
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{bookmark}
+\usepackage{multirow, makecell}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{threeparttable}
+\usepackage{appendixnumberbeamer} 
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato} 
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+\newenvironment{widedescription}{\description\addtolength{\itemsep}{10pt}}{\enddescription}
+\hypersetup{
+colorlinks=true,
+linkcolor=black,
+filecolor=green, 
+urlcolor=blue,
+}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{author in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{title in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{date in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{section in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{page number in head/foot}{bg=white, fg=Khaki}
+\setbeamercolor{headline}{bg=white}
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertshortdate
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.44\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.22\paperwidth,ht=2.25ex,dp=1ex,center]{page number in head/foot}%
+            \usebeamerfont{page number in head/foot}\insertframenumber{} / \inserttotalframenumber
+        \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+%\setbeamercolor{page number in head/foot}{fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3em\rlap{\hskip-1.75em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=Khaki}\setbeamertemplate{footline}{} \begin{frame}}{\end{frame}}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\title[Recitation 4 (UN 3412)]{Recitation 4: Multivariate OLS} % Change this regularly
+\author[Lee]{Seung-hun Lee}
+\institute[]{Columbia University \\ Undergraduate Introduction to Econometrics Recitation}
+
+\date[October 6th, 2022]{October 6th, 2022}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%% Color slides for section headers: Use for colloquium version (The ones bewteen \iffals and \fi)
+
+
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Gauss-Markov Theorem}}
+       \end{center}
+\end{transitionframe}
+
+\begin{frame}
+\frametitle{Gauss-Markov Theorem: Big picture}
+\begin{itemize}
+\item Assuming classical linear regression assumptions, OLS is the unbiased, linear estimator with the smallest variance (OLS = BLUE)
+\end{itemize}
+\begin{block}{Gauss-Markov Theorem: Statement and condition}
+Assuming the following conditions
+\begin{itemize}
+\item Conditional expectation is zero: $E[u_i|X_i]=0$
+\item Homoskedasticity: $var(u_i|X_i)=\sigma_u^2$
+\item No autocorrelation: $E[u_iu_j|X_i]=0$ for $i\neq j$
+\end{itemize}
+OLS is best, linear, unbiased estimator (BLUE)
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{OLS is linear and unbiased}
+\begin{itemize}
+\item  Linearity: We can write the numerator from $\hat{\beta}_1=\frac{\sum_{i=1}^n (X_i-\bar{X})(Y_i-\bar{Y})}{\sum_{i=1}^n(X_i-\bar{X})^2 }$ as
+\[
+\begin{aligned}
+\sum_{i=1}^n (X_i-\bar{X})(Y_i-\bar{Y})&=\sum_{i=1}^n X_iY_i - \bar{Y}\sum_{i=1}^nX_i -\bar{X}\sum_{i=1}^nY_i + n\bar{X}\bar{Y}\\
+\end{aligned}
+\]
+We use the fact that $\sum_{i=1}^nX_i = n\bar{X}$ to reduce the above to
+\[
+\begin{aligned}
+\sum_{i=1}^n X_iY_i - \bar{Y}\sum_{i=1}^nX_i -\bar{X}\sum_{i=1}^nY_i + n\bar{X}\bar{Y}&=\sum_{i=1}^n X_iY_i  -\bar{X}\sum_{i=1}^nY_i =\sum_{i=1}^n (X_i-\bar{X})Y_i \\
+\end{aligned}
+\]
+Thus, OLS estimator is linear in $Y_i$
+\[
+\hat{\beta}_1 = \frac{\sum_{i=1}^n (X_i-\bar{X})Y_i}{\sum_{i=1}^n(X_i-\bar{X})^2 } = \sum_{i=1}^n c_iY_i
+\]
+\item Unbiasedness: We have shown this when we talked about the sampling distribution of $\hat{\beta}_1$. The same logic holds here
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{OLS has the smallest variance out of unbiased, linear estimators}
+\begin{itemize}
+\item Let $\tilde{\beta}_1$ be linear in $Y_i$ and unbiased ($\tilde{\beta}_1=\sum_{i=1}^n a_iY_i$). We can write
+\[
+\begin{aligned}
+\tilde{\beta}_1 &= \sum_{i=1}^n a_i(\beta_0+\beta_1X_i+u_i)= \sum_{i=1}^n a_i\beta_0+\beta_1\sum_{i=1}^na_iX_i+\sum_{i=1}^na_iu_i \\
+\end{aligned}
+\] 
+\item Since this is also unbiased, we can infer that (note that this applies to $c_i$ too)
+\footnotesize{\[
+\begin{aligned}
+E\left[\sum_{i=1}^n a_iu_i|X_i\right]=0 & \sum_{i=1}^n a_i=0 &  \sum_{i=1}^n a_iX_i=1 
+\end{aligned}
+\]}
+\item We have
+\small{\[
+\begin{aligned}
+var(\tilde{\beta}_1|X_i)&=var({\beta}_1+\sum_{i=1}^n a_iu_i|X_i)=\sum_{i=1}^n a_i^2 var(u_i|X_i) = \sum_{i=1}^n a_i^2 \sigma_u^2\\
+var(\hat{\beta}_1|X_i)&=\frac{\sigma_u^2}{\sum_{i=1}^n(X_i-\bar{X})^2 }=\sum_{i=1}^n c_i^2\sigma_u^2 (\text{Verify on your own})
+\end{aligned}
+\]
+}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{OLS has the smallest variance out of unbiased, linear estimators}
+\begin{itemize}
+\item So the difference in variances are
+\[
+var(\tilde{\beta}_1|X_i)-var(\hat{\beta}_1|X_i) = \sigma_u^2\sum_{i=1}^n (a_i^2-c_i^2)
+\]
+\item Let $a_i = c_i+d_i$. Then we have
+\[
+\begin{aligned}
+\sum_{i=1}^n a_i^2&= \sum_{i=1}^n c_i^2+\sum_{i=1}^n d_i^2+2\sum_{i=1}^nc_id_i\\
+&=\sum_{i=1}^n c_i^2+\sum_{i=1}^n d_i^2 + 2 \frac{\sum_{i=1}^n (X_i-\bar{X})d_i}{\sum_{i=1}^n(X_i-\bar{X})^2} \\
+&=\sum_{i=1}^n c_i^2+\sum_{i=1}^n d_i^2 + 2 \frac{\sum_{i=1}^n X_ia_i-\sum_{i=1}^nX_ic_i-\bar{X}\sum_{i=1}^na_i+\bar{X}\sum_{i=1}^nc_i}{\sum_{i=1}^n(X_i-\bar{X})^2}\\
+&=\sum_{i=1}^n c_i^2+\sum_{i=1}^n d_i^2 (\because\text{Conditions we set for $a_i$})\\
+\end{aligned}
+\]
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{OLS has the smallest variance out of unbiased, linear estimators}
+\begin{itemize}
+\item Therefore, 
+\[
+var(\tilde{\beta}_1|X_i)-var(\hat{\beta}_1|X_i) = \sigma_u^2\sum_{i=1}^n d_i^2\geq0
+\]
+\item Takeaway: Among the class of unbiased and linear estimators, OLS has the smallest variance of them all. 
+\item Note that this also implies that there is an estimator with smaller variance but such estimator has a bias or is nonlinear  (e.g. LASSO)
+\end{itemize}
+\end{frame}
+
+
+\begin{transitionframe}
+  \begin{center}
+         { \Huge \textcolor{white}{Multivariate OLS}}
+       \end{center}
+\end{transitionframe}
+
+
+
+\begin{frame}
+\frametitle{Multivariate Regression: Why add more variables to the right?}
+\begin{itemize}
+\item Suppose that there are more than one possible independent variable
+\item The set of models are
+\[
+\begin{aligned}
+\text{True: }& Y_i = \beta_0 + \beta_1 X_i + \beta_2 Z_i+u_i\\
+\text{Mistake: }& Y_i = \beta_0 + \beta_1 X_i + u_i^*\\
+\text{Sample: }& Y_i = \hat{\beta}_0 + \hat{\beta}_1 X_i+ \hat{u}_i\\
+\end{aligned}
+\]
+\item Suppose you run an OLS regression without $Z_i$.  $\hat{\beta}_1$ can be calculated as $\frac{\sum_{i=1}^n(X_i-\bar{X})(Y_i-\bar{Y})}{\sum_{i=1}^n(X_i-\bar{X})^2}$. Replacing this with the true model gives
+\footnotesize{\[
+\begin{aligned}
+\frac{\sum_{i=1}^n(X_i-\bar{X})(Y_i-\bar{Y})}{\sum_{i=1}^n(X_i-\bar{X})^2} =& \frac{\sum_{i=1}^n(X_i-\bar{X})(\beta_1(X_i-\bar{X})+\beta_2(Z_i-\bar{Z})+(u_i-\bar{u}))}{\sum_{i=1}^n(X_i-\bar{X})^2}\\
+=& \beta_1 + \beta_2\frac{\sum_{i=1}^n(X_i-\bar{X})(Z_i-\bar{Z})}{\sum_{i=1}^n(X_i-\bar{X})^2}+\frac{\sum_{i=1}^n(X_i-\bar{X})(u_i-\bar{u})}{\sum_{i=1}^n(X_i-\bar{X})^2}\\
+\end{aligned}
+\]}\normalsize
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Omitted variable bias: Bias from missing out needy independent variables}
+\begin{itemize}
+\item If $\beta_2 \neq0$ and $\frac{\sum_{i=1}^n(X_i-\bar{X})(Z_i-\bar{Z})}{\sum_{i=1}^n(X_i-\bar{X})^2}\neq 0$, then the mean of $\hat{\beta}_1$ is not guaranteed to be $\beta_1$. This leads to the \textbf{omitted variable bias} problem
+\item This happens when both of the following cases hold
+\begin{itemize}
+\item \underline{$Z$ should explain $Y$}: If the slope coefficient of $Z$ ($\beta_2$) is nonzero, then the $Z$ variable is part of the error term if we forget to include them
+\item \underline{$Z$ is correlated with $X$}: If $cov(X,Z)\neq0$ and the regression residual $\hat{u}$ is correlated with $X$, the independent variable is now correlated with $\hat{u}$, which leads to violation of the assumption that independent variable and the residual are not correlated.
+\end{itemize}
+\item We can even determine the direction of the bias
+\begin{itemize}
+\item $\hat{\beta}_1$ is overestimated if $\beta_2\frac{\sum_{i=1}^n(X_i-\bar{X})(Z_i-\bar{Z})}{\sum_{i=1}^n(X_i-\bar{X})^2}>0$
+\item $\hat{\beta}_1$ is underestiated  if $\beta_2\frac{\sum_{i=1}^n(X_i-\bar{X})(Z_i-\bar{Z})}{\sum_{i=1}^n(X_i-\bar{X})^2}<0$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Omitted variable bias: What to do about it?}
+\begin{itemize}
+\item We can simply include the $Z$ variable if we have the data for it. 
+\item Another way is to conduct an ideal randomized controlled experiment (or randomized control trial) that randomly assigns value of $X$ to all students.
+\item If none of the two are feasible, we should find another variable that can be a proxy to $Z$ - they have to be related to the $X$ variable and is uncorrelated with the errors - which is the Instrumental Variable method.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multivariate regression: So now what does the coefficients really mean?}
+\begin{itemize}
+\item The technicalities involved do not change drastically compared to the univariate regression. 
+\item However, one should interpret the coefficients cautiously. Suppose that the regression is
+\[
+Y_i = \beta_0 + \beta_1 X_i + \beta_2 Z_i+u_i
+\]
+\item To see the impact of $X_i$ and $Y_i$, one needs to take (partial) derivatives on $Y_i$ with respect to $X_i$. This leads to
+\[
+\beta_1 = \frac{\partial Y_i}{\partial X_i}
+\]
+\item In words, $\beta_1$ captures how much $Y_i$ changes with respect to $X_i$ \emph{holding other variables constant} (ceteris paribus).
+\item If you do not hold other variables ($Z_i$ in this case) fixed, the change will not exactly be $\beta_1$ (it could be more or less)
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sapling distribution of estimates: Just derive this once in your life}
+\begin{itemize}
+\item The estimates for the $\hat{\beta}_j$, can be obtained in a similar way in which we have obtained the OLS estimates for the single variable version.
+\[
+\min_{\{\beta_0,\beta_1,\beta_2\}} \sum_{i=1}^n[Y_i-\beta_0 - \beta_1X_{1i}-\beta_2X_{2i}]^2
+\]
+\item After some more amount of algebra (than the single variable case), the result we get is the following
+\begin{itemize}
+\item[$\hat{\beta}_0=$] $\bar{Y}-\hat{\beta}_1\bar{X}_1-\hat{\beta}_2\bar{X}_2$
+\item[$\hat{\beta}_1=$] $\frac{\sum_{i=1}^n (X_{1i}-\bar{X}_1)(Y_{i}-\bar{Y})\sum_{i=1}^n(X_{2i}-\bar{X}_2)^2-\sum_{i=1}^n (X_{2i}-\bar{X}_2)(Y_{i}-\bar{Y})\sum_{i=1}^n(X_{1i}-\bar{X}_1)(X_{2i}-\bar{X}_2)}{\sum_{i=1}^n (X_{1i}-\bar{X}_1)^2\sum_{i=1}^n (X_{2i}-\bar{X}_2)^2-[\sum_{i=1}^n (X_{1i}-\bar{X}_1)(X_{2i}-\bar{X}_2)]^2}$
+\item[$\hat{\beta}_2=$] $\frac{\sum_{i=1}^n (X_{2i}-\bar{X}_2)(Y_{i}-\bar{Y})\sum_{i=1}^n(X_{1i}-\bar{X}_1)^2-\sum_{i=1}^n (X_{1i}-\bar{X}_1)(Y_{i}-\bar{Y})\sum_{i=1}^n(X_{1i}-\bar{X}_1)(X_{2i}-\bar{X}_2)}{\sum_{i=1}^n (X_{1i}-\bar{X}_1)^2\sum_{i=1}^n (X_{2i}-\bar{X}_2)^2-[\sum_{i=1}^n (X_{1i}-\bar{X}_1)(X_{2i}-\bar{X}_2)]^2}$
+\end{itemize} \par\medskip
+\item What matters at this point is how we should \textbf{interpret} these coefficients. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What new problems do we have in multivariate regressions?}
+\begin{itemize}
+\item We are quite likely to end up including independent variables that are highly correlated with each other. There are two \item We say two variables $X_1$ and $X_2$ are \textbf{perfectly multicollinear} if $X_1$ is in an exact linear relationship of some sort with $X_2$.
+\item Any multicollinearities that are not in exact linear relationship is referred to as \textbf{imperfect multicollinearity}. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{When does perfect multicollinearity happen?}
+\begin{itemize}
+\item \textbf{Assume that $X_2 = cX_1$ for some constant $c$}: Then we have $(X_{2i}-\bar{X}_2)=c(X_{1i}-\bar{X}_1)$. Then $\hat{\beta}_1$ changes to $\frac{0}{0} $ 
+\item \textbf{Dummy variable trap}: Say that you have the dummy variable for females and males. Let each of them be $X_{1i}$ and $X_{2i}$ with $X_{2i}=1-X_{1i}$. Then the regression can be written as
+\begin{gather*}
+Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + u_i \iff Y_i = \beta_0 + \beta_1X_{1i} + \beta_2(1-X_{1i}) + u_i \\
+\iff Y_i = \beta_0 + \beta_2 +(\beta_1-\beta_2)X_{1i}+u_i
+\end{gather*}
+Therefore, by including both $X_{1i}$ and $X_{2i}$ in the same regression, the $X_{2i}$ vanishes from the equation. This is why when you have dummy variables for all categories in the observation, \textbf{one of them must be left out.}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Adjusted $R^2$ and why we need this}
+\begin{itemize}
+ \item Additional complication rises from interpreting the goodness of fit. In addition to $R^2$, we now get the \textbf{adjusted $R^2$} (or $\bar{R}^2$), which is defined as
+\[
+\bar{R}^2 = 1-\frac{n-1}{n-k-1}\frac{\text{RSS}}{\text{TSS}} \ \ (k:\text{number of independent variables})
+\]
+\item Since we are assuming that $k\geq 1$, adjusted $R^2$ is smaller than the $R^2$. 
+\item As we include more variables, the $\frac{n-1}{n-k-1}$ increases, leading to further decrease in  $\bar{R}^2$. \\ (There is no such factor in $R^2$, so it always increases even with irrelevant variable)
+\item However, if the new variables are very relevent, $\frac{\text{RSS}}{\text{TSS}}$ decreases quickly. 
+\item This reduces the gap between $R^2$ and the adjusted $R^2$. If the adjusted $R^2$ do not decrease drastically, it is a sign that we are adding a relevant variable. \par\medskip
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Joint hypothesis tests (Why it is not straightforward)}
+\begin{itemize}
+\item Suppose that you are running a two-sided test with 5 independent variables and significance level $\alpha = 5\%$ under the null hypothesis
+\[
+H_0: \beta_1=...\beta_5=0
+\]
+\item You reject the null hypothesis when $|t_i|\geq 1.96 $ with probability 0.05. 
+\item Now assume that each test statics are independent. Then the probability of incorrectly rejecting the null hypothesis using this approach is
+\footnotesize{\[
+\begin{aligned}
+\Pr(|t_1|>1.96 \cup...\cup |t_5|>1.96) & =1-\Pr(|t_1|\leq1.96\cap .. \cap|t_1|\leq1.96)\\
+(\because\text{Independence of $t_i$'s}) \ \ &=1-\Pr(|t_1|\leq1.96)\times ..\times\Pr(|t_5|\leq1.96) \\
+ & = 1-(0.95)^5 \\
+ &= 0.2262
+\end{aligned}
+\]}\normalsize
+\item This means that the rejection rate under the null is not 5\% but 22\% percent - we end up rejecting the null hypothesis more than we have to.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{F-test for joint significance}
+\begin{itemize}
+\item This is a test where all parts of the joint hypothesis can be tested at once. It also has mechanism for correcting the correlation between the $t$-test statistics.
+\item It ultimately allows us to correctly set the significance level even for the multiple testing case.
+\item The usual joint hypothesis test for the regression with $k$ variables (not including the constant term) is
+\[
+H_0: \beta_1 = ... =\beta_k=0, \ H_1:\lnot H_0
+\]
+where $H_1$ refers to the case where there is a nonzero element in any one of $\beta_1$ to $\beta_k$.
+\item Note that the default F-test null hypothesis for STATA is as above
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Tricks for deriving $F$-statistics}
+\begin{itemize}
+\item Assuming $H_0: \beta_1 = ... =\beta_q=0$ hypothesis, we use $R^2$ from the 'unrestricted' and 'restricted' regressions.
+\begin{itemize}
+\item Assume the following setup
+\footnotesize{\[\begin{aligned}
+\text{Restricted: } & Y_i =\beta_0+ 0X_{1,i} + ...+ 0X_{q,i}+ \beta_{q+1}X_{q+1,i}+...+\beta_kX_{k,i} + u_i\\
+\text{Unrestricted: } & Y_i = \beta_0+\beta_1X_{1,i} + ... +\beta_qX_{q,i}+ \beta_{q+1}X_{q+1,i}+...+\beta_kX_{k,i} + u_i\\
+\end{aligned}\]}\normalsize
+\item Restricted regression assumes that $H_0$ is true and then only optimizes with respect to $\beta_{q+1},...,\beta_{k}$.
+\item Unrestricted regression does not assume that $H_0$ is true and optimizes with respect to all slope coefficients.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tricks for deriving The $F$-statistic}
+\begin{itemize}
+ \item We use $R^2$ from these two regressions. 
+\[
+\frac{(R^2_{\text{Unrestricted}}-R^2_{\text{Restricted}})/q}{(1-R^2_{\text{Unrestricted}})/(n-k-1)}
+\]
+\begin{itemize}
+\item $k$: number of independent variables (not counting intercept)
+\item $q$ is the number of restrictions. 
+\item Since unrestricted models allows roles for $X_1,...,X_q$ variables, they have higher $R^2$ (Restricted: They should have no role)
+\end{itemize}
+\item Another: Using $R^2_{\text{Restricted}} = 1-\frac{RSS_{\text{Restricted}}}{TSS}$, we can write
+\[
+\frac{(RSS_{\text{Restricted}}-RSS_{\text{Unrestricted}})/q}{(RSS_{\text{Unrestricted}})/(n-k-1)}
+\] 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Other tests in multivariate regressions}
+\begin{itemize}
+\item Suppose that instead of $\beta_1$ and $\beta_2$ being zero, we are just interested in whether they are equal.
+\item The $F$-test can also be used for testing this hypothesis. The setup of the hypothesis would be
+\[
+H_0: \beta_1 = \beta_2 \ H_1: \beta_1 \neq \beta_2
+\]
+\item With this, you can answer various types of tests (e.g. is $\beta_1+\beta_2=100$?)
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%
+\end{document}
